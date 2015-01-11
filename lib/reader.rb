@@ -9,11 +9,12 @@ require_relative 'core_ext'
 # always a substring of the @current_line
 #
 class Reader
-  
+
   attr_reader :number_of_lines, :number_of_words
   attr_reader :current_line, :current_word
+  attr_reader :line_index, :word_index
   attr_reader :valid
-  
+
   def initialize(text)
 
 
@@ -24,8 +25,8 @@ class Reader
     else
       return @valid
     end
-    
-    
+
+
     @lines = text.split("\n")
     @line_index = 0
     @number_of_lines = @lines.count
@@ -37,27 +38,29 @@ class Reader
       @valid = true
     end
 
-    
+
     @words = @current_line.split(" ")
     @number_of_words = @words.count
-    @word_index = 0
-    if @number_of_words > 0
-      @current_word = @words[@word_index]
-    end
+    @word_index = -1
+    @current_word = '@!START'
 
-    
+
     # puts "#{@number_of_lines} lines".blue
     # puts "#{@number_of_words} words".cyan
     # puts "first word: ".blue + "#{@current_word}".red
     # puts "first line: ".blue + "#{@current_line}".red
 
-        
+
+  end
+
+  def advance_word
+    @current_word = get_word
   end
 
   def get_word
     @word_index += 1
     if @word_index < @number_of_words
-      @words[@word_index]
+      @current_word = @words[@word_index]
     else
       if @current_line = get_line
         @current_word
@@ -68,22 +71,26 @@ class Reader
 
   end
 
-  def parse_line(line)
+  def parse_line(line, start_index = 0)
     @words = line.split(' ')
     @number_of_words = @words.count
-    @word_index = 0
+    @word_index = start_index
     @current_word = @words[@word_index]
   end
 
-  def get_line
+  def get_line(word_index = 0)
     @line_index += 1
     if @line_index < @number_of_lines
       line = @lines[@line_index]
-      parse_line(line)
+      parse_line(line, word_index)
     else
       line = nil
     end
     line
+  end
+
+  def advance_line
+    @current_line = get_line(-1)
   end
 
   def next_line
@@ -111,6 +118,12 @@ class Reader
     end
     value
   end
-  
-  
+
+  def display
+    @lines.each_with_index do |line, index|
+      puts "#{index + 1}".green + ": #{line}".blue
+    end
+  end
+
+
 end

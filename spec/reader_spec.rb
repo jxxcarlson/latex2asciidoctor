@@ -10,49 +10,49 @@ end
 
 
 describe Reader do
-  
+
   it 'can read in a text file convert it to an array of lines' do
-    
+
     text = IO.read(path('transcendence4.tex'))
-    
+
     reader = Reader.new(text)
 
     expect(reader.valid).to eq true
     expect(reader.number_of_lines).to eq 661
     expect(reader.number_of_words).to eq 0
-    expect(reader.current_word).to eq nil
-    
+    expect(reader.current_word).to eq '@!START'
+
   end
 
-  
+
   it 'can read in a text file convert it to an array of lines' do
-    
+
     text = IO.read(path('simple.txt'))
-    
+
     reader = Reader.new(text)
 
     expect(reader.valid).to eq true
     expect(reader.number_of_lines).to eq 4
     expect(reader.number_of_words).to eq 1
-    
+
   end
-  
+
   it 'can extracts the current and next line when initialized' do
-    
+
     text = IO.read(path('simple.txt'))
-    
+
     reader = Reader.new(text)
 
     expect(reader.valid).to eq true
     expect(reader.current_line).to eq 'one'
     expect(reader.next_line).to eq 'two three'
-      
+
   end
-  
+
   it 'can get lines on demand' do
-    
+
     text = IO.read(path('simple.txt'))
-    
+
     reader = Reader.new(text)
 
     expect(reader.valid).to eq true
@@ -61,7 +61,7 @@ describe Reader do
     expect(reader.get_line).to eq 'four five six'
     expect(reader.get_line).to eq 'seven eight nine ten'
     expect(reader.get_line).to eq nil
-      
+
   end
 
   it 'can get look ahead to the next line' do
@@ -88,7 +88,7 @@ describe Reader do
 
     reader = Reader.new(text)
 
-    expect(reader.current_word).to eq 'one'
+    expect(reader.get_word).to eq 'one'
     expect(reader.get_word).to eq nil
 
 
@@ -107,19 +107,19 @@ describe Reader do
 
 
   it 'can get words on demand' do
-    
+
     text = IO.read(path('simple2.txt'))
-    
+
     reader = Reader.new(text)
-    
-    expect(reader.current_word).to eq 'one'
+
+    expect(reader.get_word).to eq 'one'
     expect(reader.get_word).to eq 'two'
     expect(reader.get_word).to eq 'three'
     expect(reader.get_word).to eq 'four'
     expect(reader.get_word).to eq 'five'
     expect(reader.get_word).to eq 'six'
     expect(reader.get_word).to eq nil
-      
+
   end
 
   it 'maintains the relation @current_word a substring of @current_line' do
@@ -128,7 +128,7 @@ describe Reader do
 
     reader = Reader.new(text)
 
-    expect(reader.current_word).to eq 'one'
+    expect(reader.get_word).to eq 'one'
     expect(reader.current_line =~ /#{reader.current_word}/).to be >= 0
     expect(reader.get_word).to eq 'two'
     expect(reader.current_line =~ /#{reader.current_word}/).to  be >= 0
@@ -144,5 +144,5 @@ describe Reader do
 
   end
 
-  
+
 end
