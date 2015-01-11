@@ -1,0 +1,662 @@
+
+%%%%%%%%%%%%%%%%%%%
+
+\documentclass[11pt]{amsart}
+
+\newtheorem{proposition}{Proposition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\newtheorem{problem}{Problem}
+\newtheorem{question}{Question}
+\newtheorem{example}{Example}
+\newtheorem{definition}{Definition}
+
+
+\usepackage{amssymb}
+\usepackage{amsthm}
+
+%%% Set depth of table of contents
+  \setcounter{tocdepth}{1}
+
+
+\newtheorem{remark}{Remark}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%
+\newcommand{\DT}{{\mathbb S}}
+%\newcommand{\remark}[1]{\noindent{\sl #1}}
+
+
+%\newcommand{\nb}[1]{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% defs.tex
+
+\input defs.tex
+
+\newcommand{\dashedarrow}{-\to}
+   
+%%% end of defs.tex
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\parskip=5pt
+
+\title{Transcendence of Periods of a Cubic Surface \\ (Working Notes)}
+\author{James Carlson and Domingo Toledo }
+
+\date{April 13, 2011. Research partially supported by National Science 
+Foundation Grant DMS-0600816;
+ the first author also gratefully acknowledges the support of the Clay
+ Mathematics Institute and of CIMAT.  \\ 
+ } 
+% \emph{file = special\_periods4.text}
+                                           
+% Activate to display a given date or no 
+
+
+\begin{document}
+\maketitle
+
+{\bf Abstract.} We (hope to) show that the periods of a doubly cyclic
+cubic threefold $Y$ are computable in terms of periods the elliptic curve
+$E$ which defines $Y$.
+
+
+\parskip=1pt
+\tableofcontents
+
+
+\parskip=5pt
+
+\section{Introduction}
+
+Our aim in this note is investigate the transcendence of periods
+of a cubic surface.  By periods we mean those of the associated
+cyclic cubic threefold, as described in \cite{ACT}. A full, or
+even a substantial understanding of this question is likely very
+far away, since it is not yet resolved for elliptic curves, 
+though there are precise conjectures in this case \cite{Andre}, 
+\cite{Waldschmitt}.  What we undertake, therefore, is quite modest.
+Let $F(X_0,X_1,X_2) = 0$ define a cubic curve $E$.  Let
+\[
+   Y = \sett{[X_0, \ldots, X_4] \in \PP^4}{X_3^3 + X_4^3 = F(X_0,X_1,X_2)}
+\]
+be the ``doubly cyclic'' cubic threefold associated to $E$.  We will relate
+the periods of $Y$ to the periods of $E$. 
+
+\section{Computation of the Cohomology}
+
+To compute the cohomology of $Y$, observe that there is a rational map
+\[
+   f: Y \dashedarrow \PP^2
+\]
+given by $f(X_0, \ldots X_4) = (X_0, X_1 , X_2)$. This map is undefined
+at the three points $B = \set{b_1, b_2, b_3}$ of intersection of the line 
+$X_0 = X_1 = X_2 = 0$ with  $Y$.  Let $Y'$ be the variety 
+obtained by blowing up the points of $B$. Then there is a map
+\[
+   f: Y' \map \PP^2
+\]
+which presents $Y'$ as a fiber space over $\PP^2$.  Over $\PP^2 - E$, the
+fiber is a Fermat elliptic curve.  Over $E$, the fiber is a set of three 
+distinct lines passing through a point.  Even more is true: over $E$,
+$Y'$ has the structure of a product.
+
+Notice that $H^3(Y) \cong H^3(Y')$.  Thus we can compute the first group
+by computing the second.  We will do this with the help of the Leray
+spectral sequence for $f$.  The relevant terms are
+\[
+   E_2^{p,q} = H^p(\PP^2, R^qf_*\ZZ),
+\]
+Since the fibers of $f$ are algebraic curves, $E_2^{0,3} = 0$.  Since $R^0f_*\ZZ \cong \ZZ$,
+$E_2^{3,0} = H^3(\PP^2, \ZZ) = 0$.  Thus there are only two non-vanishisng terms. 
+The first is
+\begin{equation}
+\label{leray21}
+   E_2^{2,1} = H^2(\PP^2, R^1f_*\ZZ).
+\end{equation}
+The coefficient sheaf is supported on $\PP^2 - E$, and on that open set it is 
+a local system with fiber $\ZZ^2$.  The fiber is also a free $\EEE$-module of
+rank one.  Thus the local system is associated to one of the two non-trivial representations
+of 
+\[
+    \pi_1(\PP^2 - E) \map Aut(\EEE),
+\]
+that is, the representation which sends a generator $\gamma$ to $\omega$ or $\bar\omega$,
+where $\omega = \exp 2\pi \sqrt{-1}/3$.
+Thus we have
+\begin{equation}
+\label{eq:locsyscoh}
+   H^2(\PP^2, R^1f_*\ZZ) = H^2(\PP^2 - E, R^1f_*\ZZ).
+\end{equation}
+where the coefficient sheaf is a canonical local system of rank one $\EEE$-modules,
+which we shall write as $\EEE_{\PP^2 - E}$ in recognition of the support
+of this local system.
+
+To compute the cohomology $(\ref{eq:locsyscoh})$, consider the surface 
+\[
+  S = \sett{(X_0: \ldots : X_3:0) \in \PP^4}{X_3^3 = F(X_0,X_1,X_2)}
+\]
+The projection of $\PP^3$ from the center $(X_0 : X_1 :  X_2)$ to the plane $\{X_3=0\}$
+defines a cyclic cover
+\[
+   g: S \map \PP^2.
+\] 
+The fiber of $g$ over $\PP^2 - E$ is a set of three points, and over $E$ it is a single
+point.  The cyclic transformation cyclically permutes the three points.  Thus we have a short exact sequence 
+\[
+  0 \to \ZZ_{\PP^2}\to  g_*\ZZ  \to  \EEE_{\PP^2 - E} \to 0
+\]
+where the kernel is the constant sheaf, embedded in $g_*\ZZ $ as the fixed subsheaf of the cyclic group action.   We get an exact sequence
+\[
+   0 \to H^2(\PP^2, \ZZ) \to H^2(S, \ZZ) \to  H^2(\PP^2 - E, \EEE) \to 0.
+\]
+We recognize this as the decomposition of $H^2(S,\ZZ)$ into primitive 
+cohomology and the multiples of the hyperplane class.  In particular, we have
+\[
+   H^2(\PP^2 - E, g_*\ZZ) \cong H^2(S,\ZZ)_{prim}
+\]
+and so
+\begin{equation}
+\label{rankleray21}
+  \dim E_2^{2,1} =  \dim H^2(\PP^2 - E, \EEE) = 6.
+\end{equation}
+This is the first non-vanishing $E_2$-term in the Leray sequence for cohomology of $H^3(Y)$.
+
+Let us consider next the other non-vanishing term , which is given by the cohomology group
+\[
+   E_2^{1,2} = H^1(\PP^2, R^2f_*\ZZ)
+\]
+The coefficient sheaf  fits into a short exact sequence with a subsheaf  supported on $\PP^2$
+and quotient supported on $E$:
+\begin{equation}
+\label{r2sheafdec}
+  0\to \ZZ_{\PP^2}\to  R^2f_*\ZZ \to  \EEE_E\to 0.
+\end{equation}
+The subsheaf is a constant sheaf (fundamental class of the Fermat elliptic curve over $\PP^2 -  E$ and the sum of the 
+fundamental classes of the three $\PP^1$'s over $E$)  The quotient  $\EEE_E$ is a 
+rank one the trivial bundle of $\EEE$-modules over $E$,  i.e.,
+\[ 
+      \EEE_E \cong E\times\EEE.
+\]
+Thus $H^1(E, \EEE) = H^1(E)\otimes \EEE$.
+
+To give generators, write a reference fiber as $L_0 + L_1 + L_2$, where the $L_i$ are concurrent projective lines
+and $\omega L_i = L_{i+1}$, where $i + 1$ is considered modulo 3.  Then the difference of fundamental classes, $L_1 - L_0$
+defines a generator of
+
+
+The cohomology of the subsheaf is 
+zero since $H^1(\PP^2,\ZZ) = 0$.  The cohomology of the quotient sheaf
+is 
+\begin{equation}
+\label{H1:E:EEE}
+  H^1(E,\EEE) \cong H^1(E,\ZZ)\otimes_\ZZ\EEE.
+\end{equation}
+That is, $H^1(E,\EEE)$ is of rank 2 as an $\EEE$-module and of
+rank 4 as a $\ZZ$-module.
+Consequently
+\begin{equation}
+\label{rankleray12}
+ \dim E_2^{1,2} =   \dim H^1(\PP^2, R^2f_*\ZZ) = 4.
+\end{equation}
+Taken together, we have
+\[ 
+    \dim E_2^{2,1} + \dim E_2^{1,2}= 10 = \dim H^3(Y,\ZZ).
+\]
+Consequently, the Leray spectral sequence
+degenerates at $E_2$.  We therefore have an exact sequence of 
+of Eisenstein modules
+\begin{equation}
+\label{H3:decomp}
+   0 \to H^2(\PP^2 - E, \EEE) \to H^3(Y) \to   H^1(E, \EEE) \to 0.
+\end{equation} 
+%%
+\nb{Split over $\QQ$ but not over $\ZZ$?}
+We now investigate the nature of the two parts.
+
+\begin{lemma} 
+The Hodge structure $H^2(\PP^2 - E, \EEE)$ is rigid.
+\end{lemma}
+
+\begin{proof}
+We argue that  one of the two summands
+in the preceding decomposition is rigid.  To this end, consider
+the joint Hodge-eigenvalue decomposition for a cyclic cubic
+threefold.  It yields  the following table, the sum of whose
+entries is 10, the dimension of $H^3(Y)$.
+\[
+\begin{tabular}{l|c|c}
+ & (2,1) & (1,2) \\  \hline
+ $\omega$ & 4 & 1 \\
+ $\bar\omega$ & 1 & 4 
+ \end{tabular}
+ \]
+This table can be split into tables of sum 6 and 4,
+respectively, in only two ways. One splitting is
+\[
+\begin{tabular}{l|c|c}
+ & (2,1) & (1,2) \\  \hline
+ $\omega$ & 2 & 1 \\
+ $\bar\omega$ & 1 & 2 
+ \end{tabular}
+ %%
+ \qquad 
+ %%
+ \begin{tabular}{l|c|c}
+ & (2,1) & (1,2) \\  \hline
+ $\omega$ & 2 & 0 \\
+ $\bar\omega$ & 0 & 2 
+ \end{tabular}
+ \]
+The other is
+\[
+\begin{tabular}{l|c|c}
+ & (2,1) & (1,2) \\  \hline
+ $\omega$ & 3 & 0 \\
+ $\bar\omega$ & 0 & 3 
+ \end{tabular}
+ %%
+ \qquad 
+ %%
+ \begin{tabular}{l|c|c}
+ & (2,1) & (1,2) \\  \hline
+ $\omega$ & 1 & 1 \\
+ $\bar\omega$ & 1 & 1 
+ \end{tabular}
+ \]
+In both cases there is a summand
+in which the Hodge decomposition is the same
+as the eigenvalue decomposition.  This  
+term is rigid.  
+
+To decide which of the two cases holds, 
+observe that the isomorphism of $(\ref{H1:E:EEE})$ is
+in fact an isomorphism of Hodge structures, with the
+$\EEE$ on the right endowed with the Hodge structure
+of type $(1,1,)$.  Therefore the dimension of the pieces of the  Hodge-Eisenstein decomposition
+are given by the right-hand member of the second pair of tables above.
+For the other summand, the Hodge and eigenvalue decomposition
+are the same.  Therefore the summand $H^2(\PP^2 - E, \EEE)$
+is rigid, as required.
+\end{proof} 
+ 
+The variation in moduli of the elliptic curve $E$ is reflected in 
+the variation of the Hodge structure $H^1(E)\otimes\EEE$ as a summand
+of the Hodge structure $H^3(Y)$.
+
+
+\subsection{Some guesses}
+
+My guess: the decomposition
+\[
+   H^3(Y) \cong H^2(\PP^2 - E, R^1f_*\ZZ) \oplus H^1(E, \EEE)
+\]
+is really
+\[
+H^3(Y) \cong 
+   H^2_{prim}(S, \ZZ)\otimes_\EEE H^1(E_\omega) + H^1(E_\tau)\otimes_\ZZ \EEE(-1),
+\]
+where $\EEE(-1)$  is the natural Eisenstein module of rank one endowed with a trivial
+Hodge structure of type $(1,1)$.
+%%
+\nb{Further guesses. Write decomposition as $H = H' \oplus H''$.
+Then $K_{per}(H') = K_{per}(H^1(E_\omega))$ and 
+ $K_{per}(H'') = K_{per}(H^1(E_\omega)) K_{per}(H^1(E_\tau))$
+ }
+ %%
+The first summand is three-dimensional as an $\EEE$-module and six-dimensional as
+a $\ZZ$-module.  The second summand has the structure of a four-dimaensional $\ZZ$-module
+or a two-dimensional $\EEE$-module, where the action is given by $\phi(x,y) = (y , -x -y)$.
+
+This suggests that the periods of $Y$ are (1) periods of the Fermat elliptic curve (2) periods
+of the Fermat elliptic curve times periods of $E_\tau$.  Periods of the second type are products
+of transcendental numbers.  Are they transcendental?  \nb{They should be, since they are also 
+abelian integrals.}
+
+\begin{remark}{Can we use some kind of Hodge-theoretic semisimplicity to show a priori
+that integrals like this are products?  I.e., whenever they come from a tensor product?}
+\end{remark}
+
+
+\section{Mumford-Tate group}
+
+\begin{proposition} The Mumford-Tate group of a doubly cyclic cubic threefold
+is given as follows:
+
+\begin{enumerate}
+
+	\item If $\tau = \omega$, then $MT(T) \cong MT(E_\omega)$ is a 2-torus.  This is the case 
+	of the Fermat cubic threefold.
+	
+	\item If $\tau \ne \omega$ and $E_\tau$ has complex multiplication, then 
+	$MT(T) \cong MT(E_\omega)\times MT(E_\tau)$ is a 4-torus.
+	
+	\item If $\tau \ne \omega$ and $E_\tau$ does not have complex multiplication, then 
+	$MT(T) \cong MT(E_\omega)\times MT(E_\tau) = T\times GL_2$, where
+	$T$ is a 2-torus.
+
+\end{enumerate}
+\end{proposition}
+
+
+Recall the decomposition
+\[ 
+   H^3(T) \cong H^3(\PP^2 - E_\tau, R^1f_* \ZZ) \oplus H^1(E_\tau, (R^2f_*\ZZ)_{prim}),
+\]
+where $E_\tau$ is an elliptic curve with period $\tau$.
+The local system $(R^2f_*\ZZ)_{prim}$ is a trivial local system of rank one $\EEE$-modules regarded
+as a system of Hodge structures of type $(1,1)$.  Fiberwise, it is spanned by differences of lines.  We write it as $\EEE(1,1)$.  Then
+\[
+  H^3(T) \cong H^2(S)_{prim} \otimes_\EEE H^1(E_\omega)
+  \oplus H^1(E_\tau,\EEE(1,1)).
+\]
+Now the Mumford-Tate group of a direct sum is contained in the Cartesian product of the Mumford-Tate groups of the factors, which we call $A$ and $B$  Thus we have
+\[
+    MT(   H^3(T)   ) 
+       \subset 
+     MT(  A  ) 
+        \times 
+     MT(  B )
+\]
+For the first term, we have
+\[
+  A = H^2(S)_{prim} \otimes_\EEE H^1(E_\omega) \cong H^1(E_\omega) ^{\oplus 6},
+\]
+So that 
+\[
+    MT(A) \subset (MT(H^1(E_\omega))^6).
+\]
+If the cubic surface has enough symmetry, then $MT(A)$ is the diagonal and so
+\[
+    MT(A) = MT(H^1(E_\omega)).
+\]
+Somehow I think we always have equality.
+
+Now let's look at $B$.  Since the local system is trivial,
+\[
+   B \cong (H^1(E_\tau)(1,1))^2
+\]
+and so 
+\[
+   MT(T) \subset MT(H^1(E_\tau)(1,1))^2
+\]
+But there are symmetries of $T$ permuting the lines, so that again
+the image is the diagonal group and we have
+\[
+   MT(T) = MT(H^1(E_\tau))
+\]
+Thus we have
+\[
+  MT(T) \subset MT(H^1(E_\omega)) \times MT(H^1(E_\tau)).
+\]
+We claim that that this in an equality.   Hmmmmm....
+
+
+
+
+
+\section{The Field of Periods}
+
+Let $X$ be an algebraic variety defined over $\QQ$.  Let $H^m_{DR}(X)$ and $H^m_B(X)$
+be the de Rham and Betti cohomologies of $X$ computed with rational coefficients.
+Let $\phi_1, \ldots, \phi_n$ and $\gamma^1, \ldots, \gamma^n$ be bases of these two vector spaces.
+Let  $(P_{ij})$ be the matrix which relates these two bases:
+\[
+     \phi_i  = \sum P_{ij}\gamma^j.
+\]
+This is the \emph{period matrix}, so called because
+\[
+    P_{ij} = \int_{\gamma_j}\phi_i,
+\]
+where $\gamma_1, \ldots, \gamma_n$ is a homology basis dual to $\gamma^1, \ldots, \gamma^n$.
+The \emph{field of periods} is the field $K_{per}(H^m(X))$ generated be the entries of the period matrix.
+
+
+\noindent
+One can, however, give a much more specific result which implies the same remark:
+
+\begin{theorem}
+Let $T$ be a doubly cyclic cubic threefold with branch curve $E_\tau$,
+where $E_\tau$ is an elliptic curve with period $\tau$.  Then
+$K_{per}(T)$ is the compositum of $K(E_\omega)$ and $K(E_\tau)$.
+\end{theorem}
+
+
+
+
+\begin{corollary}
+(a) If $\tau  = \omega$, then $T$ is the Fermat cubic threefold and  $K_{per}(T) = K_{per}(E_\omega)$ is a field of 
+transcendence degree two. (b)  If $\tau  \ne \omega$, and $E_\tau$ has complex
+multiplication, then then $K_{per}(T) $ has transcendence degree four. (c)  
+If $\tau  \ne \omega$, and $E_\tau$ does not have complex
+multiplication, then then $K_{per}(T) $ has transcendence degree at most six; conjecturally
+it has transcendence degree exactly six.
+\end{corollary}
+\nb{Compare with $MT$.  Note that for generic cubic threefold, tr. deg $\le 100$, for generic
+cyclic cubic threefold, tr. deg. $\le 25$.}
+
+\begin{remark} \rm {According to Ribet \cite{Ribet:DF}, the transcendence degree of the field of periods of a simple abelian variety
+of dimensions $g$ with complex multiplication s bounded below by $2 + \log_2 g$.  This bound applies in case (c) of the
+preceding theorem.  Thus the transcendence degree in that case is bounded below by $4.3$.  Consequently the transcendence degree is either 5 or 6.}
+\nb{Can we decide this and get a sharp bound?}
+\end{remark}
+
+\noindent
+The inequalities of the corollary also follow from the results on the Mumford-Tate group, coupled with Deligne's result XXX.
+
+\subsection{Towards a proof of the theorem}
+
+Let $H_{DR}$, $H_B$ be the deRham and Betti cohomologies of an algebraic variety.  Suppose that
+there are given direct sum decompositions $H_{DR} = H'_{DR} \oplus H''_{DR}$ and 
+ $H_{B} = H'_{B} \oplus H''_{B}$.  Let 
+ \[
+    \iota: {H_{DR}}\otimes_\QQ \CC \mapright{\cong} {H_B}\otimes_\QQ \CC
+\] 
+ be the comparison isomorphism. (see \cite{Deligne:HCA}).
+ The decompositions are said to be \emph{natural} (with respect to the comparison isomorphism)
+ if
+\[
+     \iota(  H'_{DR}\otimes_\QQ \CC ) = H'_{B}\otimes_\QQ \CC .
+\]
+and
+\[
+     \iota(  H''_{DR}\otimes_\QQ \CC ) = H''_{B}\otimes_\QQ \CC .
+\]
+
+
+\begin{lemma}  Suppose give an natural decomposition of cohomology
+$H = H' \oplus H''$.  Then
+\[
+    K_{per}(H) = K_{per}(H')K_{per}(H'')
+\]
+where the right-hand side is the compositum, i.e., the smallest field containing the two
+given fields.
+\end{lemma}
+
+\begin{proof}
+The assertion is evident: take bases $\phi_i$ and $\gamma_j$ are adapted to these
+decompositions, so that $\phi_1, \ldots, \phi_a$ span $H'_{DR}$
+and $\phi_{a+1}, \ldots, \phi_n$ span $H''_{DR}$, and similarly
+for the $\gamma_j$.  Then the period matrix has the block decomposition
+\[
+   P = \left(
+          \begin{array}{cc}
+          P' & 0 \\
+          0 & P''
+          \end{array}
+         \right)
+\]
+\end{proof}
+
+
+
+%%
+\nb{Idea of proof: the comparison isomorphism is natural whenever the decomposition comes
+from the Leray spectral sequence.}
+
+
+
+\begin{proposition} Let $X$ and $Y$ be varieties defined over $k$ and let $f: X \map Y$ be a $k$-morphism.  Fix $n > 0$.
+Let $p$, $q$ be such that $n = p + q$.  Suppose that there are just two such pairs $(p,q)$  such that $H^p(Y, R^qf_* k)$ is nonzero.
+Call these pairs $(p', q')$ and $(p'', q'')$.  Then
+\[
+   H^{p+q}(X) =  H^{p'}(Y, R^{q'} {\kern-2pt} f_*k) \oplus  H^{p''}(Y, R^{q''} {\kern-3pt} f_*k)
+\]
+given by the Leray spectral sequence is a natural decomposition.
+\end{proposition}
+
+\begin{proof}
+The comparison isomorphism is the map in hypercohomomology defined by the map of complexes $\iota: \Omega_{X/k}^\bullet  \map \Omega_{X^{an}}^\bullet $
+that maps a rational $p$-form on a Zariski open set to the same form on the same open set in the analytic topology.
+The Leray spectral sequence for $f$ is the Grothendieck spectral sequence for composition of functors $\Gamma_X = \Gamma_Y \circ f_*$,
+This spectral sequence applies to (a) constant coefficients $k$, $\CC$, etc., (b) the de Rham complex over $k$, $\CC$, etc., viewed as an object in the derived category isomorphic to  $k$, $\CC$, etc.  The comparison map on the level of complexes of sheaves gives a comparison map on the level of hypercohomology and also on the $E_2$ terms of the Leray spectral sequence.  The last assertion concludes the proof.
+\end{proof}
+
+
+\section{Computation of Integrals}
+
+Now comes the hard part!
+
+\section{Symmetry Considerations}
+
+We now use symmetry considerations to derive what the sequence $(\ref{H3:decomp})$ must be.   Let $\Lambda$ be the 5-dimensional Eisenstein lattice with its hermitan form of signature $(4,1)$.  The periods of cyclic cubic surfaces give totally geodesic disks  in $B^4$ which are fixed by a certain isometries of  order $3$.   Any two such disks are equivalent under the action of the group $\Gamma$.
+
+We will work with one specific disk $D\subset B^4$ chosen as follows.   First we use our knowledge of a representative $P_0 = (2-\bar\omega:1:1:1:1)$ for the period of the Fermat cubic surface, and we will choose our disk $D$ so that $P_0\in D$.  We will then choose a particular transformation $\tau$ of order $3$ that fixes $D$ ($\tau$ and $D$ determine each other, correspond choosing one of the several disks of cyclic surfaces that pass through $P_0$).
+
+Next, it is known that $\Gamma_\tau$, the centralizer of $\tau$ in $\Gamma$, is a group of order $54$ that also fixes $D$ pointwise.   This is the group $G_{54}^9$ of \cite{Hosoh}, or $IV$ of \cite{Dolgachev} or XXX of \cite{Segre}.  See these references for more information.
+
+ Moreover there is an element $\eta\in\Gamma$ of order $4$ that normalizes the group $\Gamma_\tau$ and that, together with $\Gamma_\tau$ generates a subgroup of order $108$ of $\Gamma$, namely the group of automorphisms of the triple cover of the Gaussian elliptic curve.  This is the group $G_{108}^9$, $III$, or XXX of the above references.   The restriction of $\eta$ to $D$ has an isolated fixed point $P_1$ which represents the period of this Gaussian surface.
+ 
+ To find these structures explicitly, we begin with $P_0 = (2 - \bar\omega :1:1:1:1)$ which is more convenient to write as $P_0 = (1- \theta\omega :1:1:1:1)$, and we'll let $V_0 = (1-\theta\omega,1,1,1,1)\in\Lambda$ representing $P_0$.  Note that $h(V_0) = -3$.  
+ 
+ We next find a basis for the sublattice $V_0^\bot \subset\Lambda$.  It is easy to see that the vectors $(1,1,1,-\omega,0), (1,1,1,0,-\omega), (1,1,0,1,-\omega), (1,0,1,1,-\omega)$ are in $V_0^\bot\cap\Lambda$, are linearly independent, and their Gram matrix has determinant $3$.   Therefore they form a basis for $V_0^\bot\cap\Lambda$.    Calling these vectors $r_1,\dots,r_4$, it is easy to find all $\EEE$-integral linear combinations of them that have norm $2$, there are $108$ of them, which fall into $108/6 = 18$ classes up to multiplication by units in $\EEE$.   Select one representative from each class and call them $r_1,\dots,r_{18}$, where the firs $4$ are as already chosen.  Since $h(r_i) = 2$, the reflections $R_i$ in these vectors preserve $\Lambda$, thus are elements of $\Gamma$ and in fact generate the group $\Gamma_{P_0}$ of order $648$ of automorphisms of the Fermat cubic surface.
+ 
+ The Fermat cubic surface is cyclic in several ways, meaning that there are several geodesic disks of cyclic surfaces meeting at $P_0$.   Each one of them is fixed by a cyclic transformation $\tau$ with eigenvalues $\omega$ wiht multiplicity $3$ and $1$ with multiplicity $2$.  This is in the conjugacy class denoted $3 A_2$ in \cite{Dolgachev, Hosoh}.   Some experimentation gives a product of the above reflections  $R_i$ that lies in this conjugacy class.  For example, if we let $r_5 = (0,0,1,-1,0)$ then $\tau = R_1R_2R_5R_1R_2R_5$ is in the desired conjugacy class.
+Explicitly
+
+\begin{equation}
+\label{eq-tau}
+\tau =
+\left(\begin{array}{ccccc} 2 - \omega & \omega - 1 & -1 & -1 & -1 \\1 -\omega & \omega  & -1 & -1 & -1 \\ -\omega & \omega & \omega & 0 & 0 \\ -\omega & \omega & 0 & \omega & 0 \\ -\omega & \omega & 0 & 0 & \omega \end{array}\right)
+\end{equation}
+It is easy to check that $r_1, r_2, r_3$ form an $\EEE$-basis for $\Lambda_\omega$, the intersection with $\Lambda$ of the $\omega$-eigesnpace of $\tau$.   The Gram matrix has determinant $3$ and the lattice $\Lambda_\omega$ is isometric to the (dual) $D_3(\theta)$ lattice in the notation of XXX. \nb{check notation and reference}
+
+Similarly we find that $\Lambda_1$,  the one-eigenlattice of $\tau$, has basis $(-\theta\omega,0,1,1,1)$ and $(1,1,0,0,0)$.   Note that the sum of these two vectors is the vector $V_0$ above which represents the period $P_0$ of the Fermat cubic.   The Gram matrix of this basis has deteminant $-3$.
+Thus the sublattice $\Lambda_1\oplus\Lambda_\omega\subset\Lambda$ has index $9$.  \nb{check the index!}  This decomposition roughly corresponds to the exact sequence  \ref{H3:decomp}.  MAKE THIS MORE PRECISE!!!  
+
+It is easy to check that the lattice $\Lambda_\omega$ has $54$ vectors of norm $2$, which fall into $54/6 = 9$ equivalence classes modulo multiplication by units in $\EEE$.  It will be convenient to choose one representative from each class and to label them $v_1,\dots ,v_9$ given by the correspoding rows of the following matrix:
+
+\begin{equation}
+\label{eq-roots}
+\left(\begin{array}{ccccc}1 & 1 & 1 & -\omega & 0 \\1 & 1 & -\omega & 0 & 1 \\1 & 1 & 1 & 0 & -\omega \\0 & 0 & 1 & -1 & 0 \\0 & 0 & 1 & 0 & -1 \\0 & 0 & 0 & 1 & -1 \\1 & 1 & -\omega & 1 & 0 \\1 & 1 & 1 & 0 & -\omega \\1 & 1 & 0 & -\omega & 1\end{array}\right)
+\end{equation}
+The reason for this choice of numbering is to make it compatible with various properties of the points of inflection of the corresponding cubic curves.  This sublattice represents a marking of the points of inflection, and the the nine vectors are in one to one correspondence with these points.  The corresponding reflections represent the minus map on the cubic curve centered at the corresponding point of inflection.
+
+More precisely, if we choose $v_1$ to correspond to the origin of the cubic curve, then the vectors $v-v2$ and $v1v4$ give a basis for the $\FF_3$-vector space of points of inflection.   If the curve in question has an automorphism of order $4$, then it would correspond to the permutation $\{1,7,4,2,8,5,3,9,6\}$ of the ($\EEE$-lines) of the vectors $v_i$.  Thus, to find the automorphism $\eta$ of $\Lambda$, we first find an automorphism of $\Lambda_\omega$ that permutes the $v_i$ in the same way, up to multiples by units.   Some experimentation gives that the linear transformation of $\Lambda_\omega$ which, in the basis $v_1,v_2,v_4$ has matrix 
+\begin{equation}
+\label{eq-orderfour}
+\left(\begin{array}{ccc}1 & -\omega & 0 \\0 & 0 & 1 \\0 & -1 & 0\end{array}\right)
+\end{equation}
+is an isometry of $\Lambda_\omega$ that sends $v_1$ to itself, sends $v_2, v_4$ to a multiples by units  of $v_7, v_2$ respectively, thus it induces the desired permutation of order $4$ of the lines $\EEE v_1,\dots,\EEE v_9$.
+
+We need to extend this transformation to an automorphism of $\Lambda$.  To this end, we first extend it to an automorphism of the sublattice $\Lambda_1\oplus\Lambda_\omega$, and then show that it actually extends to an automorphism of $\Lambda$.
+
+It will be convenient to use the basis of $\Lambda_1\oplus\Lambda_\omega$ given by the columns of the following matrix $B$.  Note that the first two columns are a basis for $\Lambda_1$, and the last three the above basis for $\Lambda_\omega$:
+\begin{equation}
+\label{eq-basis}
+B = \left(\begin{array}{ccccc} -\theta & 1 & 1 & 1 & 0 \\0 & 1 & 1 & 1 & 0 \\\bar\omega & 0 & 1 & -\omega & 1 \\ \bar\omega & 0 & -\omega & 0 & -1 \\ \bar\omega & 0 & 0 & 1 & 0\end{array}\right)
+\end{equation}
+
+  Let us take the transformation $T$ of $\Lambda_1\oplus\Lambda_\omega$ which, in this basis, is given by $90^0$ rotation on $\Lambda_1$ and the above transformation (\ref{eq-orderfour}) on $\Lambda_\omega$, namely
+  \begin{equation}
+  \label{eq-splittransformation}
+ T = \left(\begin{array}{ccccc}0 & -1 & 0 & 0 & 0 \\ 1 & 0 & 0 & 0 & 0 \\0 & 0 & 1 & -\omega & 0 \\0 & 0 & 0 & 0 & 1 \\0 & 0 & 0 & -1 & 0\end{array}\right) 
+  \end{equation}
+This defines an automorphism of $\Lambda_1\oplus\Lambda_\omega$ of order $4$.   
+Then $\eta = BTB^{-1}$ is the matrix of this transformation in the standard basis for $\Lambda$.  It is an isomorphism of $\Lambda\otimes_\EEE \QQ(\sqrt{-3})$, and it is an automorphism of $\Lambda$ if and only if its matrix has $\EEE$- integral entries.   We find that
+\begin{equation}
+\label{eq-integrality}
+\eta = \left(\begin{array}{ccccc} \omega + \theta & -\omega & 1-\omega & -\omega & -\omega \\ \omega & -\omega & 1 & 0 & 0 \\ -\bar\omega & 0 & -\omega & 0 & \bar\omega \\ \theta & -\omega & -\omega & -\omega & -\omega \\ -\bar\omega & 0 & -\omega & \bar\omega & 0\end{array}\right)
+\end{equation}
+which is indeed an $\EEE$-integral matrix, so $\eta$ is an automorphism of $\Lambda$. 
+
+Define a linear map $\Phi:\CC^2\to \CC^{(4,1)}$ by 
+\begin{equation}
+\label{eq-embedding}
+\Phi(u_0,u_1) = (u_0 - \theta u_1,u_0,\bar\omega u_1,\bar\omega u_1,\bar\omega u_1)
+\end{equation} 
+Note that $\Phi^* h (u_0,u_1) = 2\sqrt{3}\  \Im{ ( \bar u_0, u_1)}$, thus $\Phi$ is a totally geodesic embedding of the upper half-plane $\Im{(\bar u_0, u_1)} >0 $ in $B^4$ with image the fixed point set of the cyclic transformation $\tau$.   Observe that $\Phi(1:\omega) = (1 - \theta\omega : 1:1:1:1) = P_0$, the period of the Fermat cubic surface, and $\Phi(1:i) = (1+\sqrt{3}:1:i\bar\omega:i\bar\omega:i\bar\omega) = P_1$.  Thus $P_1$ is a candidate for the period of the triple cover of the Gaussian elliptic curve.   This will be the case if and only if it is fixed by a transformation in $\Gamma$ in the conjugacy class of $\eta$, because this is equivalent to saying that the corresponding surface has automorphism group the group $G_{108}^9$ of order $108$ mentioned above.
+
+One finds that $\eta((1+\sqrt{3}:1:i\bar\omega:i\bar\omega:i\bar\omega)) = i (1+\sqrt{3}:1:i\bar\omega:i\bar\omega:i\bar\omega)$, thus $P_1$ is a fixed point of $\eta$.  Thus (\ref{eq-embedding}) is a parametrization of the image of the Hesse pencil of elliptic curves.   BY SOME SORT OF UNIQUENESS STATEMENT THIS SHOULD COMPLETE THE PROOF OF THE FOLLOWING THEOREM:
+
+\begin{theorem}
+There exists a universal constant $c$ so that the period vector of the cyclic cubic surface branched over the cubic curve with periods $(u_0,u_1)$ is given by $c\Phi(u_0,u_1)$.
+
+\end{theorem}
+
+\begin{corollary}
+The transcendence properties of the periods of cyclic cubic surfaces are the same as those of their branch loci.
+\end{corollary}
+
+\begin{remark}
+One finds that $\eta$ has eigenvalues $i$, $-i$ (both of multiplicity $2$) and $1$ (of multiplcity one).  The signature of the $i$-eigenspace is $(1,1)$ while all the others are positive.  Thus the fixed point set of $\eta$ in $B^4$ is a totally geodesic disk $D_1$ that represents the family XXX written down by Naruki, all of which have a symmetry of order $4$, see also XXX.  The disk $D_1$ meets our disk $D$ of cyclic cubic surfaces in the period $P_1$ of the cyclic cover of the Gaussian curve.
+\end{remark}
+
+\begin{remark}
+The computation of the constant $c$ requires the computation of integrals.
+\end{remark}
+
+
+\vfill\eject
+
+\begin{thebibliography}{99}
+
+\bibitem{ACT} D. Allcock, J. Carlson, and D. Toledo, The complex hyperbolic geometry of the moduli space of cubic surfaces {\sl J. Algebraic Geom}. 11 (2002), 659-724.  (math.AG/0007048)
+
+\bibitem{Andre} Y. Andre, Galois theory, motives and transcendental numbers, 	arXiv:0805.2569v1 [math.NT]
+
+\bibitem{Deligne:HCA} Hodge cycles on abelian varieties (the notes of most of the seminar ``P\'eriodes des Int\'egrales Ab\'e?liennes'' given by P. Deligne at I.H.E.S., 197879; pp 9100 of Deligne et al. 1982,
+
+\bibitem{Deligne:CHAPI} Deligne, Pierre, Cycles de Hodge absous et p\'eriodes des int\'egrales des vari\'et\'es
+ab\'eliennes. (R\'edig\'es par J. L. Brylinski), \emph{M\'emoires de la Soci\'et\'e Math\'ematique de France}, $2^e$
+s\'erie, tome 2 (1980), p. 23-33
+
+
+\bibitem{Dolgachev}  
+I. Dolgachev, V. Iskovskikh, 
+Finite subgroups of the plane Cremona group, in  {\emph Algebra, arithmetic, and geometry: in honor of Yu. I. Manin}. Vol. I, 443548,
+Progr. Math., 269, Birkhuser Boston, Inc., Boston, MA, 2009.
+
+
+\bibitem{Hosoh} T. Hosoh,  Automorphism groups of cubic surfaces, Jour of Alg {\bf 192} (1997), 651--677.
+
+\bibitem{Ribet:DF} Ribet, K, Divisoin fields of abelina varieties with complex mulitplication, \emph{M\'emoires de la Soci\'et\'e Math\'ematique de France}, $2^e$
+s\'erie, tome 2 (1980), p. XX-XX.
+
+
+\bibitem{Segre} B. Segre, {\emph The Non-singular Cubic Surfaces}, Oxford University Press, 1942.
+
+\bibitem{Waldschmitt} M. Waldschmitt, Transcendence of Periods: The State of the Art, {\sl Pure and Applied Mathematics Quarterly} Volume 2, Number 2 (Special Issue: In honor of John H. Coates, Part 2 of 2)
+435--463, 2006
+
+\end{thebibliography}
+
+
+\vskip0.30truein
+\obeylines
+\parskip=0pt
+James A. Carlson: jcarlson AT claymath.org
+Clay Mathematics Institute
+\bigskip
+Domingo Toledo: toledo AT math.utah.edu
+Department of Mathematics
+University of Utah
+
+
+
+\end{document}
+
