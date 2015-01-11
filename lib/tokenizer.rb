@@ -2,8 +2,12 @@ require_relative 'reader'
 
 class Token
 
-  def initialize(type, value)
+  attr_reader :type, :line_index, :word_index, :value
+
+  def initialize(type, line_index, word_index, value)
     @type = type
+    @line_index = line_index
+    @word_index = word_index
     @value = value
   end
 
@@ -90,22 +94,22 @@ class Tokenizer
     if is_comment(str)
       str  = @reader.current_line
       @reader.advance_line
-     [:comment, @reader.line_index, @reader.word_index, str]
+      Token.new(:comment, @reader.line_index, @reader.word_index, str)
     elsif is_macro(str) and !is_begin_environment(str)
-      [:macro, @reader.line_index, @reader.word_index, get_macro(str)]
+      Token.new(:macro, @reader.line_index, @reader.word_index, get_macro(str))
     elsif is_begin_environment(str) and !is_begin_document(str)
-      [:environment, @reader.line_index, @reader.word_index, get_environment(str)]
+      Token.new(:environment, @reader.line_index, @reader.word_index, get_environment(str))
     elsif str != nil
-     [:word, @reader.line_index, @reader.word_index, str]
+      Token.new(:word, @reader.line_index, @reader.word_index, str)
     else
       :end
     end
   end
 
   def tokenize
-    token = :start
+    token = Token.new(:start, 0, 0, 'start')
     tokens = []
-    until token == :end do
+    until token.value == :end do
       token = get_token
       tokens << token
     end

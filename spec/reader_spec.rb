@@ -89,7 +89,7 @@ describe Reader do
     reader = Reader.new(text)
 
     expect(reader.get_word).to eq 'one'
-    expect(reader.get_word).to eq nil
+    expect(reader.get_word).to eq :end
 
 
   end
@@ -118,7 +118,7 @@ describe Reader do
     expect(reader.get_word).to eq 'four'
     expect(reader.get_word).to eq 'five'
     expect(reader.get_word).to eq 'six'
-    expect(reader.get_word).to eq nil
+    expect(reader.get_word).to eq :end
 
   end
 
@@ -140,7 +140,25 @@ describe Reader do
     expect(reader.current_line =~ /#{reader.current_word}/).to  be >= 0
     expect(reader.get_word).to eq 'six'
     expect(reader.current_line =~ /#{reader.current_word}/).to  be >= 0
-    expect(reader.get_word).to eq nil
+    expect(reader.get_word).to eq :end
+
+  end
+
+  it 'can get all the words in the input' do
+
+    text = IO.read(path('simple2.txt'))
+    reader = Reader.new(text)
+    last_word = reader.get_words(:verbose, 10)
+    expect(last_word).to eq :end
+
+  end
+
+  it 'can get all the words in the input' do
+
+    text = IO.read(path('transcendence4.tex'))
+    reader = Reader.new(text)
+    last_word = reader.get_words(:verbose, 5000)
+    expect(last_word  ).to eq :end
 
   end
 

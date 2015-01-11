@@ -28,6 +28,7 @@ class Reader
 
 
     @lines = text.split("\n")
+    @lines2 = @lines.select{ |line| line.length > 0}
     @line_index = 0
     @number_of_lines = @lines.count
     @current_line = @lines[@line_index]
@@ -61,11 +62,15 @@ class Reader
     @word_index += 1
     if @word_index < @number_of_words
       @current_word = @words[@word_index]
+      puts "NIL (1)".red if @current_word.nil?
+      @current_word
     else
       if @current_line = get_line
         @current_word
+        puts "NIL (2)".red if @current_word.nil?
+        @current_word
       else
-        nil
+        :end
       end
     end
 
@@ -75,7 +80,13 @@ class Reader
     @words = line.split(' ')
     @number_of_words = @words.count
     @word_index = start_index
-    @current_word = @words[@word_index]
+    if @word_index < @number_of_words
+      @current_word = @words[@word_index]
+      puts "NIL (3)".red if @current_word.nil?
+      @current_word
+    else
+      @current_word = :blank_line
+    end
   end
 
   def get_line(word_index = 0)
@@ -84,6 +95,7 @@ class Reader
       line = @lines[@line_index]
       parse_line(line, word_index)
     else
+      @current_word = :end
       line = nil
     end
     line
@@ -123,6 +135,18 @@ class Reader
     @lines.each_with_index do |line, index|
       puts "#{index + 1}".green + ": #{line}".blue
     end
+  end
+
+  def get_words(flag, limit)
+    word_count = 0
+    while @current_word != :end and word_count < limit
+      get_word
+      word_count += 1
+      if flag == :verbose
+        puts "#{word_count}: ".blue + "#{@current_word}".cyan
+      end
+    end
+    @current_word
   end
 
 

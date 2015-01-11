@@ -8,10 +8,17 @@ def path file
   ROOT+file
 end
 
-def get_tokens(tk, n)
+def get_tokens(tk, n, option = :all)
   puts "begin tokenize (#{n})".red
   n.times do |index|
-    puts "#{index + 1}: ".blue + "#{tk.get_token}".cyan
+    @token = tk.get_token
+    if option == :all
+      puts "#{index + 1}: ".blue + "#{@token}".cyan
+    elsif option == :brief
+      if !([:word, :blank_liine].include? @token.type)
+        puts "#{index + 1}: ".blue + "#{@token}".cyan
+      end
+    end
   end
   puts "end tokenize (#{n})".red
 end
@@ -20,10 +27,12 @@ end
 describe Tokenizer do
 
 
-  it 'extracts tokens from text' do
+  it 'extract tokesn from a document' do
 
     text = IO.read(path('1.tex'))
     tk = Tokenizer.new(text)
+    get_tokens(tk, 10)
+    expect(@token.value).to eq :end
 
   end
 
@@ -44,55 +53,48 @@ describe Tokenizer do
 
   end
 
-  it 'reads tokens from the document' do
-
-
-    end
-
-
-  it 'tokenizes a document by hand' do
-
-    text = IO.read(path('1.tex'))
-    tk = Tokenizer.new(text)
-    get_tokens(tk, 7)
-
-
-
-  end
 
 
   it 'tokenizes a document' do
 
-
     text = IO.read(path('1.tex'))
     tk = Tokenizer.new(text)
-
     tk.reader.display
+    tokens = tk.tokenize
+    expect(tokens[-1].value).to eq :end
 
-    tk.tokenize.each_with_index do |token, index|
-      puts "#{index + 1}: ".white + "#{token}".cyan
+    tokens.each_with_index do |token, index|
+      puts "#{index + 1}: ".red + "#{token}".cyan
     end
 
   end
 
 
-  it 'tokenizes a long document' do
 
+
+  it 'tokenizes a long document' do
 
     text = IO.read(path('transcendence4.tex'))
     tk = Tokenizer.new(text)
-
-    tk.get_token.to_s.blue
-    tk.get_token.to_s.blue
-    tk.get_token.to_s.blue
-    tk.get_token.to_s.blue
-    tk.get_token.to_s.blue
-    tk.get_token.to_s.blue
-
+    # tk.reader.display
+    tokens = tk.tokenize
+    expect(tokens[-1].value).to eq :end
+    puts "token count = #{tokens.count}".red
+    expect(tokens.count).to be > 3000
 
 
   end
 
+
+  it 'tokenizes a long document (2)' do
+
+    text = IO.read(path('transcendence4.tex'))
+    tk = Tokenizer.new(text)
+    # tk.reader.display
+    get_tokens(tk, 3040, :brief)
+    expect(@token.value).to eq :end
+
+  end
 
 
 end
