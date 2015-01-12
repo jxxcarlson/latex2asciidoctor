@@ -40,6 +40,10 @@ class Tokenizer
     %w(+ - * /).include? str
   end
 
+  def is_paren(str)
+    %w(( )).include? str
+  end
+
   def _get_token
     str = @reader.get_word
     if is_num(str)
@@ -48,6 +52,8 @@ class Tokenizer
       Token.new(:alpha_num, @reader.line_index, @reader.word_index, str)
     elsif is_op(str)
       Token.new(:op, @reader.line_index, @reader.word_index, str)
+    elsif is_paren(str)
+      Token.new(:paren, @reader.line_index, @reader.word_index, str)
     else
       :end
     end
@@ -87,57 +93,117 @@ class Tokenizer
 end
 
 # Grammar
-#
-# http://www.cis.upenn.edu/~matuszek/General/recursive-descent-parsing.
+# http://stackoverflow.com/questions/9814528/recursive-descent-parser-implementation << GOOD
+# http://www.cis.upenn.edu/~matuszek/General/recursive-descent-parsing.html
 # http://en.wikipedia.org/wiki/Recursive_descent_parser
 #
 
-# :expr = :num | :num [+|-] :expr
+# :expr => [-] :term { (+|-) :term }
+# :term => :factor { (*|/) :factor }
+# :factor => :number | ( expr )
 
 class Parser
 
-  attr_reader :value
+  attr_reader :token
 
   def initialize(text)
     @text = text
     @tk = Tokenizer.new(@text)
+    @total_tokens_consumed  = 0
   end
 
   def get_token
-    @tk.get_token
+    @token = @tk.get_token
+    puts "get : #{@token}".red
+    @token
   end
 
-  def push_token(token)
+  def push_token
     @tk.push token
+    if token.class.name == 'Array'
+      print_token = token[0]
+    else
+      print_token = token
+    end
+    puts "put : #{print_token}".red
   end
 
   def error(message)
     puts "Error: #{message}".red
   end
 
-  def expr
-    value = 0
-    token = get_token
-    if token.type == :num
-      value = token.value.to_i
-      token = get_token
-      if token.type == :op
-        if token.value == '+'
-          value = value + expr
-        elsif token.value == '-'
-          value = value - expr
-        else
-          error "unknown operation type (#{token.value}) in expr"
-        end
-      elsif token == :end
-        error 'unexpected token in expr'
-      end
+  def is_number
+    @token.type == :num
+  end
+
+  def is_minus_op
+    @token.type == :op and @token.value == '-'
+  end
+
+  def is_plus_op
+    @token.type == :op and @token.value == '+'
+  end
+
+  def is_additive_op
+    @token.type == :op and @token.value =~ /-|\+/
+  end
+
+  def is_mul_op
+    @token.type == :op and @token.value == '*'
+  end
+
+  def is_div_op
+    @token.type == :op and @token.value == '/'
+  end
+
+  def is_multiplicative_op
+    @token.type == :op and @token.value =~ /\*|\//
+  end
+
+  def is_left_paren
+    @token.type == :paren and @token.value == '('
+  end
+
+  def is_right_paren
+    @token.type == :paren and @token.value == ')'
+  end
+
+
+  def factor
+    if is_number
+      get_token
     end
-    value
+    if is_left_paren
+      get_token
+      expr
+      get_token
+    end
+  end
+
+  def term
+    factor
+    while is_multiplicative_op
+      get_token
+      factor
+    end
+  end
+
+  def expr
+   if is_minus_op
+     get_token
+     term
+   else
+     term
+   end
+    while is_additive_op do
+      get_token
+      term
+    end
   end
 
 
   def parse
+   get_token
    expr
   end
 

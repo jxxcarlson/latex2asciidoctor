@@ -11,11 +11,13 @@ end
 describe Reader do
 
   it 'can read a program' do
-    program = '15 + 7'
+    program = '( 15 + 7 )'
     reader = Reader.new(program)
+    expect(reader.get_word).to eq '('
     expect(reader.get_word).to eq '15'
     expect(reader.get_word).to eq '+'
     expect(reader.get_word).to eq '7'
+    expect(reader.get_word).to eq ')'
     expect(reader.get_word).to eq :end
   end
 
@@ -42,6 +44,17 @@ describe Tokenizer do
 
     token = tk.get_token
     expect(token.value).to eq :end
+
+  end
+
+  it 'can get parentheses' do
+
+    program = '('
+    tk = Tokenizer.new(program)
+
+    token = tk.get_token
+    expect(token.value).to eq '('
+
 
   end
 
@@ -117,30 +130,47 @@ end
 describe Parser do
 
 
-  it 'can evaluate the expression "17"' do
+
+  it 'can get tokens and recognize the expression 17' do
+    puts "\n\nPROGRAM: 17".cyan
     p = Parser.new('17')
-    expect(p.parse).to eq 17
+    expect(p.get_token.value).to eq '17'
+    expect(p.get_token.value).to eq :end
+
+  end
+
+  it 'can recognize the expression "- 17"' do
+    puts "\n\nPROGRAM: - 17".cyan
+    p = Parser.new('- 17')
+    p.parse
+    expect(p.token.value).to eq :end
+
+  end
+
+  it 'can evaluate the expression "1 + 2"' do
+    puts "\n\nPROGRAM: 1 + 2".cyan
+    p = Parser.new('1 + 2')
+    p.parse
+    expect(p.token.value).to eq :end
 
   end
 
 
-
-  it 'can evaluate the expression "17 + 4"' do
-    p = Parser.new('17 + 4')
-    expect(p.parse).to eq 21
-
-  end
-
-
-  it 'can evaluate the expression "17 + 4 + 3"' do
-    p = Parser.new('17 + 4 + 3')
-    expect(p.parse).to eq 24
+  it 'can recognize the expression "2 * 3"' do
+    puts "\n\nPROGRAM: 2 * 3".cyan
+    p = Parser.new('2 * 3')
+    p.parse
+    expect(p.token.value).to eq :end
 
   end
 
-  it 'can evaluate the expression "17 + 4 - 3"' do
-    p = Parser.new('17 + 4 - 3')
-    expect(p.parse).to eq 18
+
+  it 'can recognize the expression "( 2 + 3 ) * ( 4 + 5 )"' do
+    puts "\n\nPROGRAM: ( 2 + 3 ) * ( 4 + 5 )".cyan
+    p = Parser.new("( 2 + 3 ) * ( 4 + 5 )")
+    p.parse
+    expect(p.token.value).to eq :end
+
 
   end
 
