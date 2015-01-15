@@ -26,6 +26,7 @@ end
 
 describe Tokenizer do
 
+=begin
 
   it 'extract tokesn from a document' do
 
@@ -53,7 +54,7 @@ describe Tokenizer do
 
   end
 
-
+=end
 
   it 'tokenizes a document' do
 
@@ -71,7 +72,7 @@ describe Tokenizer do
 
 
 
-
+=begin
   it 'tokenizes a long document' do
 
     text = IO.read(path('transcendence4.tex'))
@@ -96,5 +97,6 @@ describe Tokenizer do
 
   end
 
+=end
 
 end

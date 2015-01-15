@@ -1,16 +1,52 @@
 
 require_relative 'tokenizer'
+require 'tree'
+include Tree
+require_relative 'counter'
+
 
 class TexParser
 
  def initialize(text)
 
-   @tk = Tokenizer.new(text)
+   @tk = Tokenizer.new(preprocess(text))
+   @stack = []
+   @counter = Counter.new
 
  end
 
+  def preprocess(text)
+    text = text.gsub('$', ' $ ')
+    text = text.gsub('\\[', ' \\[ ')
+    text.gsub('\\]', ' \\[ ')
+  end
+
   def get_token
     @tk.get_token
+  end
+
+ def display_stack
+   puts 'STACK:'.cyan
+   @stack.each do |item|
+     puts item
+   end
+   puts '---------------'.cyan
+ end
+
+ def push_stack(node)
+   @stack.push node
+ end
+
+ def pop_stack
+   @stack.pop
+ end
+
+ def top_stack
+   @stack[-1]
+ end
+
+  def new_node(content)
+    TreeNode.new(@counter.get, content)
   end
 
   def get_header
@@ -48,5 +84,7 @@ class TexParser
     end
     str
   end
+
+
 
 end

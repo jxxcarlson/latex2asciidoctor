@@ -153,6 +153,29 @@ describe Reader do
 
   end
 
+  it 'can get the next word of the input without changing @current_word' do
+    text = IO.read(path('simple2.txt'))
+    reader = Reader.new(text)
+    expect(reader.get_word).to eq 'one'
+    expect(reader.next_word).to eq 'two'
+    expect(reader.get_word).to eq 'two'
+    expect(reader.get_word).to eq 'three'
+    expect(reader.next_word).to eq 'four'
+
+  end
+
+
+  it 'can advance the current line' do
+    text = IO.read(path('simple2.txt'))
+    reader = Reader.new(text)
+    expect(reader.get_word).to eq 'one'
+    reader.advance_line
+    expect(reader.next_word).to eq 'four'
+
+
+  end
+
+=begin
   it 'can get all the words in the input' do
 
     text = IO.read(path('transcendence4.tex'))
@@ -161,6 +184,8 @@ describe Reader do
     expect(last_word  ).to eq :end
 
   end
+
+=end
 
 
 end

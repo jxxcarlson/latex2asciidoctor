@@ -70,6 +70,21 @@ class Tokenizer
     env
   end
 
+  def get_math_display(word)
+    env = [word]
+    m = match_begin_enviromment(word)
+    type = m[0]
+    while !is_end_environment(word, type) and !word.nil?
+      word = @reader.get_word
+      env << word
+    end
+    env
+  end
+
+  def get_inline_math
+
+  end
+
   def paren_count(str)
     left = str.scan /{/
     right = str.scan /}/

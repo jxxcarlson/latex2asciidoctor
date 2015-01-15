@@ -45,13 +45,6 @@ class Reader
     @word_index = -1
     @current_word = '@!START'
 
-
-    # puts "#{@number_of_lines} lines".blue
-    # puts "#{@number_of_words} words".cyan
-    # puts "first word: ".blue + "#{@current_word}".red
-    # puts "first line: ".blue + "#{@current_line}".red
-
-
   end
 
   def advance_word
@@ -62,18 +55,46 @@ class Reader
     @word_index += 1
     if @word_index < @number_of_words
       @current_word = @words[@word_index]
-      puts "NIL (1)".red if @current_word.nil?
-      @current_word
     else
       if @current_line = get_line
-        @current_word
-        puts "NIL (2)".red if @current_word.nil?
         @current_word
       else
         :end
       end
     end
+  end
 
+  def put_word
+    puts "put_word (2), @current_word = #{@current_word}".magenta
+    @word_index -= 1
+    if @word_index >= 0
+      @current_word = @words[@word_index]
+    else
+      if @current_line = previous_line
+        words_in_line = @current_line.split(' ')
+        @current_word = words_in_line[-1]
+      else
+        :end
+      end
+    end
+    puts "put_word (2), @current_word = #{@current_word}".magenta
+  end
+
+  def next_word
+    if @word_index + 1< @number_of_words
+      @next_word = @words[@word_index + 1]
+    else
+      if @next_line = next_line
+        words_in_nex_line = @next_line.split(' ')
+        if words_in_nex_line
+          words_in_nex_line[0]
+        else
+          nil
+        end
+      else
+        :end
+      end
+    end
   end
 
   def parse_line(line, start_index = 0)
@@ -114,22 +135,15 @@ class Reader
     end
   end
 
-  def get_line_old
-    value = @next_line
-    # Update state (@current_line, @next_line)
-    if @next_line
-      @current_line = @next_line
-      @line_index += 1
-      if @line_index + 1 < @number_of_lines
-        @next_line = @lines[@line_index + 1]
-      else
-        @next_line = nil
-      end
+  def previous_line
+    previous_line_index  = @line_index -+ 1
+    if previous_line_index >= 0
+      @lines[previous_line_index]
     else
-      @current_line = nil
+      nil
     end
-    value
   end
+
 
   def display
     @lines.each_with_index do |line, index|
