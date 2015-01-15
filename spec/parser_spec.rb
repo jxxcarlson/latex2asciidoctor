@@ -14,6 +14,25 @@ describe Parser do
 
   it 'can get tokens from a file' do
 
+    text = IO.read(path('0.tex'))
+    puts text.cyan
+    parser = Parser.new(text)
+    parser.reader.display
+
+    puts parser.get_token.value
+    puts parser.get_token.value
+    puts parser.get_token.value
+    puts parser.get_token.value
+    puts parser.get_token.value
+    puts parser.get_token.value
+
+
+  end
+
+
+
+  it 'can get tokens from a file' do
+
     text = IO.read(path('1.tex'))
     puts text.cyan
     parser = Parser.new(text)
@@ -27,7 +46,38 @@ describe Parser do
 
   end
 
+  it 'can display element of the stack' do
+
+    parser = Parser.new('')
+
+    str = "foo bar"
+    parser.display_element str
+
+    symbol = :foo
+    parser.display_element symbol
+
+    token = Token.new(:yuuk, 'more')
+    parser.display_element token
+
+    node = parser.new_node('hoho')
+    parser.display_element node
+
+    node2 = parser.new_node([1, 2, 3])
+    parser.display_element node2
+
+    array = [str, symbol, token, node, node2]
+    parser.display_element array
+
+
+
+  end
+
+
+
+
+
 =end
+
 
   it 'can recognize a valid file' do
 
@@ -39,20 +89,12 @@ describe Parser do
 
     puts
     puts "parser.stack.count: #{parser.stack.count}".yellow
+    parser.display_stack
 
-    item =  parser.stack[0]
-    puts item.class.name.yellow
-    puts item.content
-
-    item =  parser.stack[1]
-    puts item.class.name.yellow
-    puts item
-
-    item =  parser.stack[2]
-    puts item.class.name.yellow
-    puts item.content
 
   end
+
+
 
 
 

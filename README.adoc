@@ -1,0 +1,85 @@
+== Latex2Asciidoctor
+
+This is the beginning of a project to write
+a LaTeX to Asciidoctor-latex converter.
+
+For the moment I am roughing out
+a recursive descent parser for
+a coarse-grained version of LaTeX.
+
+Once this project is a little further along,
+I will remove the plethora of annoying junk
+files and puts statements.
+
+=== The Basic Idea
+
+Latex2Asciidoctor, which is in version the 0.0001,
+has the following parts:
+
+* *Reader* takes a string, e.g., a file's contents as input,
+then provide text in chunks to a caller via the methods `get_word` and `get_line`.
+The instance varables `@current_word` and `@current_line`
+point to the last-gotten line and word.  The relationship
+_@current_word is in @curent_line_ is preserved regardless
+of which the `get` methods is called.
+
+* *Parser* also takes a string as input.  It initializes
+a `Reader` object and calls it indirectly via `get_token`.
+Set up a Parser with `parser = Parser.new(text)`. The call
+`parser.parse` is intended to push an AST onto `parser.stack`.
+At the moment what is pushed is a bunch of nodes for elements
+of the grammar listed below.  I've tested real AST production
+with the same technology and
+a simple grammar of arithmetic expressions, one that
+recognizes and evalutes things like
+`( 1 + 2 ) * ( 3 + 4 )`.  The correct AST is built by
+a recursive descent parser constructed by hand from the grammar.
+The AST is based on `Tree::TreeNode` (see
+https://github.com/evolve75/RubyTree ).
+We use `Tree::TreeNode` this projecct as well,
+though the grammar at he moment is very simple.
+
+
+* *Other files* in `lib/` are mosty junk and/or irrelevant
+ will be removed.
+
+
+=== Grammar
+
+----
+  # Grammar
+  # -------
+
+  # Productions
+  # -----------
+  # document = header BEGIN_DOC body END_DOC
+  # body = { expr }
+  # expr = { text | macro | env | inline_math | display_math }
+  # macro = \command \{ {args} \}
+  # env = BEGIN_ENV expr END_ENV
+  # inline_math = $ math_text #
+  # display_math = \[ math_text \]
+
+  # Terminals:
+  # ----------
+  # BEGIN_DOC = '\begin{document}'
+  # END_DOC = '\end{document}'
+
+  # Pseudoterminals
+  # --------------
+  # BEGIN_ENV = '\begin{' env_name '}'
+  # END_ENV = '\end{' env_name '}'
+----
+
+A pseudoterminal such as `\begin{theorem}`
+matches `\end{theorem}`, `\begin{definition}`
+matches `\end{definition}`, etc.
+
+
+==== Testing
+
+Still very primitive, but I am using rspec and want
+to use @jirutka's doctest as well.  The Reader is well
+tested, but the Parser has been mostly tested by
+running an example and looking at the output (ahem!):
+in the root directory, run `rspec spec/parser_spec.rb`.

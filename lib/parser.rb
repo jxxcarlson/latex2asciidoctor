@@ -29,7 +29,7 @@ class Parser
 
   def initialize(text)
 
-    @reader = Reader.new(text)
+    @reader = Reader.new(preprocess(text))
     @stack = []
     @counter = Counter.new
 
@@ -38,7 +38,7 @@ class Parser
   def preprocess(text)
     text = text.gsub('$', ' $ ')
     text = text.gsub('\\[', ' \\[ ')
-    text.gsub('\\]', ' \\[ ')
+    text.gsub('\\]', ' \\] ')
   end
 
   def get_token
@@ -70,18 +70,55 @@ class Parser
     else
       puts content.to_s.cyan
     end
-
   end
+
+
+  def display_element(element, level)
+    class_name = element.class.name
+    if level > 0
+      prefix = " "*level*2 + "#{level}: "
+      pprefix = " "*level*2
+    else
+      prefix = ""
+    end
+    case class_name
+      when 'Symbol'
+        puts "#{pprefix}symbol: #{element}".blue
+      when 'String'
+        puts "#{pprefix}string: #{element}".blue
+      when 'Token'
+        puts "#{pprefix}token: #{element.type}: #{element.value}".blue
+      when 'Array'
+        puts "#{prefix}-------------------------".blue
+        puts "#{prefix}Array :".red
+        element.each do |item|
+          display_element item, level + 1
+        end
+        puts "#{prefix}- - - - - - - - - - - - - ".blue
+      when 'Hash'
+        puts "#{prefix}-------------------------".blue
+        puts "#{prefix}Hash :".red
+        element.each do |key, value|
+          puts "#{pprefix}#{key.to_s}".red
+          display_element value, level + 1
+        end
+        puts "#{prefix}- - - - - - - - - - - - - ".blue
+      when 'Tree::TreeNode'
+        puts "#{prefix}++++++++++++++++".cyan
+        puts "#{pprefix}node: #{element.name}".red
+        display_element element.content, level + 1
+        puts "#{prefix}+ + + + + + + + ".cyan
+      else
+        puts "#{prefix}unknown:".magenta
+        puts element
+    end
+  end
+
 
   def display_stack
     puts 'STACK:'.cyan
     @stack.each do |item|
-      item_class_name = item.class.name
-      if item_class_name == 'Token'
-        puts token.value.to_s.cyan
-      elsif item_class_name == 'Tree::TreeNode'
-        display_node item
-      end
+      display_element item, 0
     end
     puts '---------------'.cyan
   end
@@ -131,11 +168,20 @@ class Parser
   ################
   # PRODUCTIONS
   # document = header BEGIN_DOC body END_DOC
-  # body = { text | macro | env }
+  # body = { expr }
+  # expr = { text | macro | env | inline_math | display_math }
+  # macro = \command \{ {args} \}
+  # env = BEGIN_ENV expr END_ENV
+  # inline_math = $ math_text #
+  # display_math = \[ math_text \]
+  #
   #
   # Terminals:
   # BEGIN_DOC = '\begin{document}'
   # END_DOC = '\end{document}'
+  # Pseutotermnals
+  # BEGIN_ENV = '\begin{' env_name '}'
+  # END_ENV = '\end{' env_name '}'
 
   def header
     count = 0
@@ -144,17 +190,20 @@ class Parser
       count += 1
       push_stack @token.value
     end
+    pop_stack # remove \begin{document}
     header_value = pop_stack(count).join(' ').strip
-    node = new_node([:header, header_value])
+    node = new_node({type: :header, value: header_value})
     push_stack node
-    display_stack
   end
 
-  def environment
+
+  def environment(end_token)
+    rx = /\\end{(.*)}/
+    env_type = (end_token.match rx)[1]
     push_stack @token
     get_token
     count = 1
-    while !(@token.value =~ /\A\\end/) do
+    while @token.value != end_token do
       push_stack @token
       count += 1
       get_token
@@ -162,29 +211,64 @@ class Parser
     push_stack @token
     count += 1
     environment_list = pop_stack(count)
-    node = new_node([:environment, environment_list])
+    node = new_node({type: :environment, env_type: "#{env_type}", value: environment_list})
     push_stack node
-    display_stack
   end
 
   def text_sequence
     count = 1
     push_stack @token.value
     get_token
-    while @token.value[0] != '\\'
+    while @token.value != '$' and @token.value[0] != '\\'
       count += 1
       push_stack @token.value
       get_token
     end
-    puts "text_sequence (1), @token = #{@token}".red
-    if @token.value[0] == '\\'
+    if @token.value == '$' or @token.value[0] == '\\'
       @reader.put_word
     end
-    puts "text_sequence (2), @token = #{@token}".red
     str = pop_stack(count).join(' ')
-    node = new_node([:text, str])
+    node = new_node({type: :text, value: str})
     push_stack node
-    display_stack
+  end
+
+  def inline_math
+    get_token
+    count = 1
+    push_stack @token.value
+
+    while @token.value != '$'
+      count += 1
+      push_stack @token.value
+      get_token
+    end
+    if @token.value == '$'
+      # push_stack @token.value
+      get_token
+    end
+    str = pop_stack(count).join(' ')
+    node = new_node({type: :inline_math, value: str})
+    push_stack node
+  end
+
+  def display_math
+    get_token
+    count = 1
+    push_stack @token.value
+    puts @token.value.to_s.magenta
+    while @token.value != '\\]'
+      puts @token.value.to_s.magenta
+      count += 1
+      push_stack @token.value
+      get_token
+    end
+    if @token.value == '\\]'
+      get_token
+    end
+    str = pop_stack(count).join(' ')
+    node = new_node({type: :display_math, value: str})
+    push_stack node
+    # display_stack
   end
 
   def paren_count(str)
@@ -202,29 +286,47 @@ class Parser
       cumulative_parent_count += paren_count(value)
       str << value
     end
-    node = new_node([:macro, str])
+    name_rx =/\\([a-zA-Z].*?){/
+    args_rx = /{(.*)}/
+    command_name = (str.match name_rx)[1].strip
+    arg_str = (str.match args_rx)[1]
+    puts "arg_str: #{arg_str}".magenta
+    args = arg_str.split(',').map{ |x| x.strip}
+    puts "args: #{args}".magenta
+    node = new_node({type: :macro, value: str, macro: command_name, args: args})
     push_stack node
+  end
+
+
+
+  def expr
+    if @token.value =~ /\A\\begin/
+      begin_token = @token.value
+      end_token = begin_token.gsub('begin', 'end')
+      environment(end_token)
+    elsif @token.value == '$'
+      inline_math
+    elsif @token.value == '\\['
+      display_math
+    elsif @token.value =~ /\\[a-zA-Z].*/
+      macro
+    elsif @token.value[0] != '\\'
+      text_sequence
+    else
+      push_stack @token.value
+    end
   end
 
   def body
     count = 0
     while @token.value != END_DOC
       get_token
-      if @token.value =~ /\A\\begin/
-        environment
-      elsif @token.value =~ /\\/
-        macro
-      elsif @token.value[0] != '\\'
-        text_sequence
-      else
-        count += 1
-        push_stack @token.value
-      end
+      expr
+      count += 1
     end
     body_list = pop_stack(count)
-    node = new_node([:body, body_list])
+    node = new_node({type: :body, value: body_list})
     push_stack node
-    display_stack
   end
 
   def parse

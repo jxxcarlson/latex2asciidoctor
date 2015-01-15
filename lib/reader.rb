@@ -65,7 +65,6 @@ class Reader
   end
 
   def put_word
-    puts "put_word (2), @current_word = #{@current_word}".magenta
     @word_index -= 1
     if @word_index >= 0
       @current_word = @words[@word_index]
@@ -77,7 +76,6 @@ class Reader
         :end
       end
     end
-    puts "put_word (2), @current_word = #{@current_word}".magenta
   end
 
   def next_word
