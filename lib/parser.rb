@@ -131,6 +131,7 @@ class Parser
   ################
   # PRODUCTIONS
   # document = header BEGIN_DOC body END_DOC
+  # body = { text | macro | env }
   #
   # Terminals:
   # BEGIN_DOC = '\begin{document}'
