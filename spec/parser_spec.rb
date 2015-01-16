@@ -81,8 +81,9 @@ describe Parser do
 
   it 'can recognize a valid file' do
 
-    text = IO.read(path('1.tex'))
+    text = IO.read(path('0.tex'))
     puts text.cyan
+    
     parser = Parser.new(text)
     parser.parse
     expect(parser.token.value).to eq  END_DOC
@@ -90,7 +91,6 @@ describe Parser do
     puts
     puts "parser.stack.count: #{parser.stack.count}".yellow
     parser.display_stack
-
 
   end
 
