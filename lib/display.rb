@@ -92,7 +92,7 @@ module Display
         content[:value]
       when :body
         '\begin{document}' << "\n"
-      when :text
+      when :text, :comment, :end_document
         content[:value] << "\n"
       when :display_math
         "\\[#{content[:value]}\\]" << "\n"

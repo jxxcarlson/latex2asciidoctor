@@ -151,7 +151,7 @@ class Parser
   # PRODUCTIONS
   # document = header BEGIN_DOC body END_DOC
   # body = { expr }
-  # expr = { text | macro | env | inline_math | display_math }
+  # expr = { text | commment | macro | env | inline_math | display_math }
   # macro = \command \{ {args} \}
   # env = BEGIN_ENV expr END_ENV
   # inline_math = $ math_text #
@@ -186,9 +186,9 @@ class Parser
   def header
     count = 0
     while @token.value != BEGIN_DOC
-      get_token
       count += 1
       push_stack @token.value
+      get_token
     end
     pop_stack # remove \begin{document}
     text  = ''
@@ -197,7 +197,7 @@ class Parser
       text += h_node + ' '
     end
     node = new_node({type: :header, text: text})
-    puts "head:".red; node.print_tree
+    # puts "head:".red; node.print_tree
     push_stack node
   end
 
@@ -264,6 +264,11 @@ class Parser
     push_stack node
   end
 
+  def comment
+    push_stack new_node({type: :commment, value: @token.value})
+    get_token
+  end
+
   # inline_math: pops nodes representing tokens in the body
   # of $ ... $, pushing a node with content
   #
@@ -295,18 +300,15 @@ class Parser
     get_token
     count = 1
     push_stack @token.value
+    get_token
     while @token.value != '\\]'
       count += 1
       push_stack @token.value
       get_token
     end
-    if @token.value == '\\]'
-      get_token
-    end
     str = pop_stack(count).join(' ')
     node = new_node({type: :display_math, value: str})
     push_stack node
-    # display_stack
   end
 
 
@@ -333,6 +335,7 @@ class Parser
       value = @token.value
       cumulative_parent_count += paren_count(value)
       str << value
+      str << value
     end
     name_rx =/\\([a-zA-Z].*?){/
     args_rx = /{(.*)}/
@@ -357,6 +360,8 @@ class Parser
       macro
     elsif @token.value[0] != '\\'
       text_sequence
+    elsif @token.type == :comment
+      comment
     else
       push_stack @token.value
     end
@@ -376,16 +381,16 @@ class Parser
       expr
       count += 1
     end
+    push_stack new_node({type: :end_document, value: '\\end{document}'})
+    count += 1
     body_list = pop_stack(count)
-    display_element body_list, 0
     node = new_node({type: :body})
     tip = node
     body_list.each do |item|
       tip << item
       tip = item
     end
-
-    puts "body:".red; node.print_tree
+    # puts "body:".red; node.print_tree
     push_stack node
 
   end

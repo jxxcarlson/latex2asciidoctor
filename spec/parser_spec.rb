@@ -83,16 +83,13 @@ describe Parser do
 =end
 
 
-  it 'can recognize a valid file' do
+  it 'can recognize 0.tex as a valid file' do
 
     text = IO.read(path('0.tex'))
-    puts text.cyan
-
     parser = Parser.new(text)
     parser.parse
     expect(parser.token.value).to eq  END_DOC
     rendered_text = parser.render_tree
-
 
     puts "render_tree:".red
     puts parser.render_tree

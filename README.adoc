@@ -8,6 +8,9 @@ a coarse-grained version of LaTeX. For
 tests, (concept and progress), see item
 three in the section <<Testing>>.
 
+*Note.* Parser now passes the identity
+test for file `0.tex`.
+
 .Major Todos
 * Create tree instead of list  of nodes
   with nodes stored in content field
