@@ -101,7 +101,7 @@ class Reader
     @word_index = start_index
     if @word_index < @number_of_words
       @current_word = @words[@word_index]
-      puts "NIL (3)".red if @current_word.nil?
+      # puts "NIL (3)".red if @current_word.nil? # XX
       @current_word
     else
       @current_word = :blank_line

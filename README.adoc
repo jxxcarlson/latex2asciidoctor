@@ -4,13 +4,17 @@ This is the beginning of a project to write
 a LaTeX to Asciidoctor-latex converter.
 For the moment I am roughing out
 a recursive descent parser for
-a coarse-grained version of LaTeX.
+a coarse-grained version of LaTeX. For
+tests, (concept and progress), see item
+three in the section <<Testing>>.
 
 .Major Todos
 * Create tree instead of list  of nodes
   with nodes stored in content field
 
 * Get recursive
+
+* Tests
 
 
 === The Basic Idea
@@ -84,6 +88,22 @@ the grammar.
 
 Still very primitive, but I am using rspec and want
 to use @jirutka's doctest as well.  The Reader is well
-tested, but the Parser has been mostly tested by
-running an example and looking at the output (ahem!):
-in the root directory, run `rspec spec/parser_spec.rb`.
+tested.
+
+To test the parser, run
+```
+  $ rspec spec/parser_spec.rb
+```
+At the moment I am working on
+
+. making the parser produce
+a tree instead of a list of nodes.
+
+. the method `Parser # render_tree` in module `Display`
+
+. passing the "identity test"
+in `parser_spec.rb`:  the yield of the parser
+should be the same as the input text modulo white space.
+Once the parser implements whatever the final grammar
+is and passes this text, another render method
+can be developed to produce the proper Asciidoctor text.

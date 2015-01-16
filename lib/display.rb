@@ -72,6 +72,45 @@ module Display
     puts '---------------'.cyan
   end
 
+  def display_tree(node)
+    tip = node
+    level = 0
+    while tip do
+      display_element tip, level
+      level += 1
+      tip = tip.first_child
+    end
+  end
+
+  def render_node(node)
+    content = node.content
+    type = content[:type]
+    case type
+      when :header
+        content[:text] << "\n"
+      when :macro
+        content[:value]
+      when :body
+        '\begin{document}' << "\n"
+      when :text
+        content[:value] << "\n"
+      when :display_math
+        "\\[#{content[:value]}\\]" << "\n"
+      else
+        "\n" << node.name
+    end
+  end
+
+  def render_tree(node=top_stack)
+    tip = node
+    text = ""
+    while tip do
+      text += render_node tip
+      tip = tip.first_child
+    end
+    text
+  end
+
   def display_token_list(token_list, option = :brief)
     token_list.each_with_index do |token, index|
       if option == :all
@@ -97,5 +136,7 @@ module Display
   end
 
   ######################################
+
+
 
 end

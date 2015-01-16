@@ -8,6 +8,10 @@ def path file
   ROOT+file
 end
 
+def compress(str)
+  str.gsub(/ |\n/, '')
+end
+
 describe Parser do
 
 =begin
@@ -83,14 +87,18 @@ describe Parser do
 
     text = IO.read(path('0.tex'))
     puts text.cyan
-    
+
     parser = Parser.new(text)
     parser.parse
     expect(parser.token.value).to eq  END_DOC
+    rendered_text = parser.render_tree
 
-    puts
-    puts "parser.stack.count: #{parser.stack.count}".yellow
-    parser.display_stack
+
+    puts "render_tree:".red
+    puts parser.render_tree
+
+    expect(compress(rendered_text)).to eq compress(text)
+
 
   end
 

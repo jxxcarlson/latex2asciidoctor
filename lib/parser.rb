@@ -116,11 +116,19 @@ class Parser
   end
 
   def pop_stack(count=1)
-    @stack.pop(count)
+    if count == 1
+      @stack.pop
+    else
+      @stack.pop(count)
+    end
   end
 
   def top_stack
     @stack[-1]
+  end
+
+  def stack_size
+    @stack.count
   end
 
   #############################################
@@ -174,6 +182,7 @@ class Parser
   # type: :header
   # value: a string derived from the input
   # text from the beginning up to the token `\begin{document}`
+  #
   def header
     count = 0
     while @token.value != BEGIN_DOC
@@ -182,8 +191,13 @@ class Parser
       push_stack @token.value
     end
     pop_stack # remove \begin{document}
-    header_value = pop_stack(count).join(' ').strip
-    node = new_node({type: :header, value: header_value})
+    text  = ''
+    header_nodes = pop_stack(count)
+    header_nodes.each do |h_node|
+      text += h_node + ' '
+    end
+    node = new_node({type: :header, text: text})
+    puts "head:".red; node.print_tree
     push_stack node
   end
 
@@ -281,9 +295,7 @@ class Parser
     get_token
     count = 1
     push_stack @token.value
-    puts @token.value.to_s.magenta
     while @token.value != '\\]'
-      puts @token.value.to_s.magenta
       count += 1
       push_stack @token.value
       get_token
@@ -326,9 +338,7 @@ class Parser
     args_rx = /{(.*)}/
     command_name = (str.match name_rx)[1].strip
     arg_str = (str.match args_rx)[1]
-    puts "arg_str: #{arg_str}".magenta
     args = arg_str.split(',').map{ |x| x.strip}
-    puts "args: #{args}".magenta
     node = new_node({type: :macro, value: str, macro: command_name, args: args})
     push_stack node
   end
@@ -367,8 +377,17 @@ class Parser
       count += 1
     end
     body_list = pop_stack(count)
-    node = new_node({type: :body, value: body_list})
+    display_element body_list, 0
+    node = new_node({type: :body})
+    tip = node
+    body_list.each do |item|
+      tip << item
+      tip = item
+    end
+
+    puts "body:".red; node.print_tree
     push_stack node
+
   end
 
   # the main method
@@ -384,6 +403,12 @@ class Parser
     else
       error 'missing BEGIN_DOC'
     end
+    body_node = pop_stack
+    head_node = pop_stack
+    head_node << body_node
+    puts "yield of parse".red
+    head_node.print_tree
+    push_stack head_node
   end
 
 
