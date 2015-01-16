@@ -34,7 +34,7 @@ a simple grammar of arithmetic expressions, one that
 recognizes and evalutes things like
 `( 1 + 2 ) * ( 3 + 4 )`.  The correct AST is built by
 a recursive descent parser constructed by hand from the grammar.
-The AST is based on `Tree::TreeNode` (see
+The nodes of the AST are instances of `Tree::TreeNode` (see
 https://github.com/evolve75/RubyTree ).
 We use `Tree::TreeNode` this projecct as well,
 though the grammar at he moment is very simple.
@@ -54,10 +54,10 @@ though the grammar at he moment is very simple.
   # -----------
   # document = header BEGIN_DOC body END_DOC
   # body = { expr }
-  # expr = { text | macro | env | inline_math | display_math }
+  # expr = { text | macro | environment | inline_math | display_math }
   # macro = \command \{ {args} \}
-  # env = BEGIN_ENV expr END_ENV
-  # inline_math = $ math_text #
+  # environment = BEGIN_ENV expr END_ENV
+  # inline_math = $ math_text $
   # display_math = \[ math_text \]
 
   # Terminals:
@@ -75,6 +75,8 @@ A pseudoterminal such as `\begin{theorem}`
 matches `\end{theorem}`, `\begin{definition}`
 matches `\end{definition}`, etc.
 
+WARNING: the production for `environment` is not yet implemented per
+the grammar.
 
 ==== Testing
 

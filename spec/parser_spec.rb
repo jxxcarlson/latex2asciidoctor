@@ -33,7 +33,7 @@ describe Parser do
 
   it 'can get tokens from a file' do
 
-    text = IO.read(path('1.tex'))
+    text = IO.read(path('1  .tex'))
     puts text.cyan
     parser = Parser.new(text)
     parser.reader.display
