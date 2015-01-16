@@ -2,14 +2,16 @@
 
 This is the beginning of a project to write
 a LaTeX to Asciidoctor-latex converter.
-
 For the moment I am roughing out
 a recursive descent parser for
 a coarse-grained version of LaTeX.
 
-Once this project is a little further along,
-I will remove the plethora of annoying junk
-files and puts statements.
+.Major Todos
+* Create tree instead of list  of nodes
+  with nodes stored in content field
+
+* Get recursive
+
 
 === The Basic Idea
 

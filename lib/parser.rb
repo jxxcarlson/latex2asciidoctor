@@ -3,6 +3,7 @@ require_relative 'reader'
 require 'tree'
 include Tree
 require_relative 'counter'
+require_relative 'display'
 
 BEGIN_DOC = '\begin{document}'
 END_DOC = '\end{document}'
@@ -35,9 +36,11 @@ end
 # forthcoming iterationk, we will have
 # an actual tree.  The nodes, instances
 # of Tree::TreeNode, are set up to make
-# thie possible.  
+# thie possible.
 
 class Parser
+
+  include Display
 
   attr_accessor :reader, :token, :stack
 
@@ -56,6 +59,12 @@ class Parser
     text = text.gsub('\\[', ' \\[ ')
     text.gsub('\\]', ' \\] ')
   end
+
+  ####################################################
+  #
+  #                   Tokens
+  #
+  ####################################################
 
   # Tokens are obtained from the Reader using Reader # get_word.
   # and in the case of comments, Reader # get_line
@@ -87,11 +96,16 @@ class Parser
   # look-ahead, and we sometimes need to be
   # able to put back a token that was taken
   # 'by mistake'.
+  #
   def put_token
     @token = @reader.put_word
   end
 
-  ###########################################
+  ####################################################
+  #
+  #                   Stack
+  #
+  ####################################################
 
   # Three methods manipulating or reading
   # the stack.  The stack is intend to hold
@@ -120,105 +134,12 @@ class Parser
     TreeNode.new(@counter.get, content)
   end
 
-  ############################################
+  ####################################################
   #
-  # The next five methods display the stack
-  # or elements on it, or display tokens.
+  #                   Grammar
   #
-  ############################################
+  ####################################################
 
-
-  def display_node(node)
-    name = node.name
-    content = node.content
-    puts name.to_s.red
-    if content.class.name == 'Array'
-      content.each do |element|
-        puts element.to_s.cyan
-      end
-    else
-      puts content.to_s.cyan
-    end
-  end
-
-
-  def display_element(element, level)
-    class_name = element.class.name
-    if level > 0
-      prefix = " "*level*2 + "#{level}: "
-      pprefix = " "*level*2
-    else
-      prefix = ""
-    end
-    case class_name
-      when 'Symbol'
-        puts "#{pprefix}symbol: #{element}".blue
-      when 'String'
-        puts "#{pprefix}string: #{element}".blue
-      when 'Token'
-        puts "#{pprefix}token: #{element.type}: #{element.value}".blue
-      when 'Array'
-        puts "#{prefix}-------------------------".blue
-        puts "#{prefix}Array :".red
-        element.each do |item|
-          display_element item, level + 1
-        end
-        puts "#{prefix}- - - - - - - - - - - - - ".blue
-      when 'Hash'
-        puts "#{prefix}-------------------------".blue
-        puts "#{prefix}Hash :".red
-        element.each do |key, value|
-          puts "#{pprefix}#{key.to_s}".red
-          display_element value, level + 1
-        end
-        puts "#{prefix}- - - - - - - - - - - - - ".blue
-      when 'Tree::TreeNode'
-        puts "#{prefix}++++++++++++++++".cyan
-        puts "#{pprefix}node: #{element.name}".red
-        display_element element.content, level + 1
-        puts "#{prefix}+ + + + + + + + ".cyan
-      else
-        puts "#{prefix}unknown:".magenta
-        puts element
-    end
-  end
-
-  def display_stack
-    puts 'STACK:'.cyan
-    @stack.each do |item|
-      display_element item, 0
-    end
-    puts '---------------'.cyan
-  end
-
-  def display_token_list(token_list, option = :brief)
-    token_list.each_with_index do |token, index|
-      if option == :all
-        puts "#{index}: ".blue + "#{token}"
-      elsif option == :brief
-        puts "#{index}: ".blue + "#{token.value}".cyan
-      end
-    end
-  end
-
-  def token_list_to_str(tokens)
-    str = ''
-    tokens.each do |token|
-      if token.value == :blank_line
-        str += "\n"
-      elsif token.value.class.name == 'String'
-        str += token.value + "\n"
-      elsif token.value.class.name == 'Array'
-        str += token.value.join(" ") + "\n"
-      end
-    end
-    str
-  end
-
-  ######################################
-
-  # Grammar
-  ################
   # PRODUCTIONS
   # document = header BEGIN_DOC body END_DOC
   # body = { expr }
@@ -236,7 +157,12 @@ class Parser
   # BEGIN_ENV = '\begin{' env_name '}'
   # END_ENV = '\end{' env_name '}'
 
-  ##########################################
+
+  ####################################################
+  #
+  #                   Parser
+  #
+  ####################################################
 
   # A recursive-descent parser --- the
   # method 'Parse' at the end, preceded
