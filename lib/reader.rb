@@ -1,6 +1,10 @@
 
 require_relative 'core_ext'
 
+BLANK_LINE = :end
+EOL = "\n"
+EOF = :end
+
 
 # The Reader is initialized with a text string.  It creates
 # two arrays from the input tex, @lines and @words.
@@ -14,9 +18,9 @@ class Reader
   attr_reader :current_line, :current_word
   attr_reader :line_index, :word_index
   attr_reader :valid
+  attr_accessor :lines
 
-  def initialize(text)
-
+  def initialize(text, option = {})
 
     @valid = false
 
@@ -28,7 +32,8 @@ class Reader
 
 
     @lines = text.split("\n")
-    @lines2 = @lines.select{ |line| line.length > 0}
+
+
     @line_index = 0
     @number_of_lines = @lines.count
     @current_line = @lines[@line_index]
@@ -40,28 +45,39 @@ class Reader
     end
 
 
-    @words = @current_line.split(" ")
+    @words = @current_line.split(" ") << "\n"  # XXX (1)
     @number_of_words = @words.count
     @word_index = -1
     @current_word = '@!START'
 
   end
 
-  def advance_word
-    @current_word = get_word
-  end
+  ##############################################################
+  #
+  #   word methods: get_word, put_word, next_word, get_words
+  #
+  ##############################################################
 
   def get_word
     @word_index += 1
     if @word_index < @number_of_words
       @current_word = @words[@word_index]
     else
-      if @current_line = get_line
-        @current_word
+      @current_line = get_line
+      if @current_line
+        @words = @current_line.split(" ") << "\n"  # XXX (2)
+        if @words.count == 0
+          @current_word = EOL
+        else
+          @number_of_words = @words.count
+          @word_index = 0
+          @current_word = @words[@word_index]
+        end
       else
-        :end
+        @current_word = :end
       end
     end
+    @current_word
   end
 
   def put_word
@@ -95,39 +111,46 @@ class Reader
     end
   end
 
-  def parse_line(line, start_index = 0)
-    @words = line.split(' ')
-    @number_of_words = @words.count
-    @word_index = start_index
-    if @word_index < @number_of_words
-      @current_word = @words[@word_index]
-      # puts "NIL (3)".red if @current_word.nil? # XX
-      @current_word
-    else
-      @current_word = :blank_line
+  def get_words(flag)
+    word_count = 0
+    while @current_word != :end
+      get_word
+      word_count += 1
+      if flag == :verbose
+        puts "#{word_count}: ".blue + "#{@current_word}".magenta
+      end
     end
+    @current_word
   end
 
-  def get_line(word_index = 0)
+
+  ##############################################################
+  #
+  #   line methods: get_line, next_line, previous_line
+  #
+  ##############################################################
+
+  def get_line
     @line_index += 1
     if @line_index < @number_of_lines
-      line = @lines[@line_index]
-      parse_line(line, word_index)
+      @current_line = (@lines[@line_index]).strip
+      if @current_line
+        @words = @current_line.split(" ") << "\n"  # XXX (3)
+        @number_of_words = @words.count
+        @word_index = 0
+        @current_word = @words[@word_index]
+      end
     else
-      @current_word = :end
-      line = nil
+      @current_line = nil
     end
-    line
+    @current_line
   end
 
-  def advance_line
-    @current_line = get_line(-1)
-  end
 
   def next_line
     next_line_index  = @line_index + 1
     if next_line_index < @number_of_lines
-      @lines[next_line_index]
+      @lines[next_line_index].strip
     else
       nil
     end
@@ -143,23 +166,18 @@ class Reader
   end
 
 
+  ##############################################################
+  #
+  #   other methods: display
+  #
+  ##############################################################
+
   def display
     @lines.each_with_index do |line, index|
       puts "#{index + 1}".green + ": #{line}".blue
     end
   end
 
-  def get_words(flag, limit)
-    word_count = 0
-    while @current_word != :end and word_count < limit
-      get_word
-      word_count += 1
-      if flag == :verbose
-        puts "#{word_count}: ".blue + "#{@current_word}".cyan
-      end
-    end
-    @current_word
-  end
 
 
 end

@@ -4,10 +4,10 @@ require 'tree'
 include Tree
 require_relative 'counter'
 require_relative 'display'
+require_relative 'node'
 
 BEGIN_DOC = '\begin{document}'
 END_DOC = '\end{document}'
-
 
 class Token
 
@@ -47,6 +47,7 @@ class Parser
   def initialize(text)
 
     @reader = Reader.new(preprocess(text))
+    @reader.lines << Token.new(:end, 'end')
     @stack = []
     @counter = Counter.new
 
@@ -80,12 +81,12 @@ class Parser
   #
   def get_token
     word = @reader.get_word
-    if word[0] == '%'
-      @token = Token.new(:comment, reader.current_line)
-      reader.advance_line
+    if word == :end
+      @token = Token.new(:end, 'end')
+    elsif word[0] == '%' and @reader.word_index == 0
+      @token = Token.new(:comment, word)
     elsif word == :blank_line
       @token = Token.new(:blank, "\n")
-      reader.advance_line
     else
       @token = Token.new(:word, word)
     end
@@ -118,6 +119,16 @@ class Parser
   def pop_stack(count=1)
     if count == 1
       @stack.pop
+    else
+      @stack.pop(count)
+    end
+  end
+
+  def pop_stack_to_list(count=1)
+    if count == 0
+      []
+    elsif count == 1
+      [@stack.pop]
     else
       @stack.pop(count)
     end
@@ -183,21 +194,17 @@ class Parser
   # value: a string derived from the input
   # text from the beginning up to the token `\begin{document}`
   #
+  # XX: the below is too complicated: recode dammit!!
+  #
   def header
     count = 0
-    while @token.value != BEGIN_DOC
+    while @token and  @token != :end and @token.value != BEGIN_DOC
       count += 1
       push_stack @token.value
       get_token
     end
-    pop_stack # remove \begin{document}
-    text  = ''
-    header_nodes = pop_stack(count)
-    header_nodes.each do |h_node|
-      text += h_node + ' '
-    end
-    node = new_node({type: :header, text: text})
-    # puts "head:".red; node.print_tree
+    str = pop_stack_to_list(count).string_join
+    node = new_node({type: :header, value: str})
     push_stack node
   end
 
@@ -259,14 +266,28 @@ class Parser
     if @token.value == '$' or @token.value[0] == '\\'
       @reader.put_word
     end
-    str = pop_stack(count).join(' ')
+    if count > 1
+      str = pop_stack(count).string_join
+    else
+      str = pop_stack
+    end
     node = new_node({type: :text, value: str})
     push_stack node
   end
 
   def comment
-    push_stack new_node({type: :commment, value: @token.value})
-    get_token
+    count = 0
+    while @token.value != "\n"
+      push_stack @token.value
+      count += 1
+      get_token
+    end
+    push_stack @token.value
+    count += 1
+    str = pop_stack_to_list(count).string_join
+    puts "[#{str}]".red
+    node = new_node({type: :comment, value: str})
+    push_stack node
   end
 
   # inline_math: pops nodes representing tokens in the body
@@ -276,19 +297,18 @@ class Parser
   # value: the ...
   #
   def inline_math
-    get_token
-    count = 1
+    count = 0
     push_stack @token.value
+    count += 1
+    get_token
 
     while @token.value != '$'
-      count += 1
       push_stack @token.value
+      count += 1
       get_token
     end
-    if @token.value == '$'
-      # push_stack @token.value
-      get_token
-    end
+    push_stack @token.value
+    count += 1
     str = pop_stack(count).join(' ')
     node = new_node({type: :inline_math, value: str})
     push_stack node
@@ -335,7 +355,6 @@ class Parser
       value = @token.value
       cumulative_parent_count += paren_count(value)
       str << value
-      str << value
     end
     name_rx =/\\([a-zA-Z].*?){/
     args_rx = /{(.*)}/
@@ -348,7 +367,9 @@ class Parser
 
   # expr: a switch for the various grammar elements
   def expr
-    if @token.value =~ /\A\\begin/
+    if @token.type == :comment
+      comment
+    elsif @token.value =~ /\A\\begin/
       begin_token = @token.value
       end_token = begin_token.gsub('begin', 'end')
       environment(end_token)
@@ -360,8 +381,6 @@ class Parser
       macro
     elsif @token.value[0] != '\\'
       text_sequence
-    elsif @token.type == :comment
-      comment
     else
       push_stack @token.value
     end
@@ -378,8 +397,10 @@ class Parser
     count = 0
     while @token.value != END_DOC
       get_token
-      expr
-      count += 1
+      if @token.value  != END_DOC
+        expr
+        count += 1
+      end
     end
     push_stack new_node({type: :end_document, value: '\\end{document}'})
     count += 1
@@ -399,7 +420,7 @@ class Parser
   def parse
     get_token
     header
-    if @token.value == BEGIN_DOC
+    if @token and @token.value == BEGIN_DOC
       get_token
       body
       if @token.value != END_DOC
@@ -410,10 +431,33 @@ class Parser
     end
     body_node = pop_stack
     head_node = pop_stack
+    if head_node.nil?
+      head_node = new_node({type: :header, value: ""})
+    end
+    if head_node.nil?
+      body_node = new_node({type: :body, value: ""})
+    end
+
     head_node << body_node
-    puts "yield of parse".red
-    head_node.print_tree
+    if $VERBOSE
+      puts "yield of parse".red
+      head_node.print_tree
+    end
     push_stack head_node
+  end
+
+  ####################################################
+  #
+  #                   Display
+  #
+  ####################################################
+
+  def render_tree(node=top_stack)
+    node.render_tree
+  end
+
+  def error message
+    puts "ERROR: #{message}".red
   end
 
 

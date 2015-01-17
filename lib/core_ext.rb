@@ -27,7 +27,39 @@ class Date
 
 end
 
+
+class Array
+
+  def string_join
+    if self.count == 0
+      return ''
+    end
+    str = ''
+    self[0..-2].each do |element|
+      if element[-1] == "\n"
+        str << element
+      else
+        str << element << ' '
+      end
+    end
+    str << self[-1]
+  end
+
+end
+
 class String
+
+  def tag_eol
+    self + " \n"
+  end
+
+  def compress
+    self.gsub(/ |\n/, '')
+  end
+
+  def eol_edit
+    self.gsub(' @@EOL', '')
+  end
 
   def blue
     "\e[1;34m#{self}\e[0m"

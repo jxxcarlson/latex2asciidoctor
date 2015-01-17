@@ -66,6 +66,7 @@ module Display
 
   def display_stack
     puts 'STACK:'.cyan
+    puts "size = #{stack_size}".blue
     @stack.each do |item|
       display_element item, 0
     end
@@ -82,34 +83,7 @@ module Display
     end
   end
 
-  def render_node(node)
-    content = node.content
-    type = content[:type]
-    case type
-      when :header
-        content[:text] << "\n"
-      when :macro
-        content[:value]
-      when :body
-        '\begin{document}' << "\n"
-      when :text, :comment, :end_document
-        content[:value] << "\n"
-      when :display_math
-        "\\[#{content[:value]}\\]" << "\n"
-      else
-        "\n" << node.name
-    end
-  end
 
-  def render_tree(node=top_stack)
-    tip = node
-    text = ""
-    while tip do
-      text += render_node tip
-      tip = tip.first_child
-    end
-    text
-  end
 
   def display_token_list(token_list, option = :brief)
     token_list.each_with_index do |token, index|
@@ -133,6 +107,15 @@ module Display
       end
     end
     str
+  end
+
+  def bracket_log(arg, tag=nil)
+    if tag
+      puts "#{tag}: ".cyan + "[#{arg}]".red
+    else
+      puts "[#{arg}]".red
+    end
+
   end
 
   ######################################

@@ -8,8 +8,13 @@ a coarse-grained version of LaTeX. For
 tests, (concept and progress), see item
 three in the section <<Testing>>.
 
-*Note.* Parser now passes the identity
-test for file `0.tex`.
+*Note.* Parser now passes the "identity
+test" for a small number of files,
+e.g., `empty.tex`, 'paragraphs.tex',
+`comment.tex`, `macro.tex`, `inline_math.tex`,
+and `display_math.tex`
+
+
 
 .Major Todos
 * Create tree instead of list  of nodes
@@ -17,7 +22,14 @@ test for file `0.tex`.
 
 * Get recursive
 
-* Tests
+
+== Design notes
+
+We should mimic the structure of Asciidoctor -- in particular, have
+abstract and concrete
+blocks, where the head and body are blocks, environments are blocks nested
+within them, and which can in turn contain other blocks.  The grammar
+and parser will have to be reworked for this.
 
 
 === The Basic Idea
