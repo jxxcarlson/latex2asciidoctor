@@ -52,7 +52,7 @@ At the moment what is pushed is a bunch of nodes for elements
 of the grammar listed below.  I've tested real AST production
 with the same technology and
 a simple grammar of arithmetic expressions, one that
-recognizes and evalutes things like
+recognizes and evaluates things like
 `( 1 + 2 ) * ( 3 + 4 )`.  The correct AST is built by
 a recursive descent parser constructed by hand from the grammar.
 The nodes of the AST are instances of `Tree::TreeNode` (see
