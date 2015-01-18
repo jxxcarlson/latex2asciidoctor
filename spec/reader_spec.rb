@@ -2,10 +2,11 @@ require 'rspec'
 require_relative '../lib/reader'
 
 
-ROOT = '/Users/carlson/dev/git/latex2asciidoctor/text/'
+ROOT = File.expand_path File.dirname(__FILE__).gsub('spec', 'text')
+
 
 def path file
-  ROOT+file
+  ROOT + '/' + file
 end
 
 
