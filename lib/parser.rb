@@ -42,13 +42,14 @@ class Parser
 
   include Display
 
-  attr_accessor :reader, :token, :stack, :rendered_text
+  attr_accessor :reader, :token, :stack, :rendered_text, :token_stack
 
   def initialize(text)
 
     @reader = Reader.new(preprocess(text))
     @reader.lines << Token.new(:end, 'end')
     @stack = []
+    @token_stack = []
     @counter = Counter.new
 
   end
@@ -80,18 +81,23 @@ class Parser
   # in the instance variable @token
   #
   def get_token
-    word = @reader.get_word
-    if word == :end
-      @token = Token.new(:end, 'end')
-    elsif word[0] == '%' and @reader.word_index == 0
-      @token = Token.new(:comment, word)
-    elsif word == :blank_line
-      @token = Token.new(:blank, "\n")
+    if @token_stack.count > 0
+      @token = @token_stack.pop
     else
-      @token = Token.new(:word, word)
+      word = @reader.get_word
+      if word == :end
+        @token = Token.new(:end, 'end')
+      elsif word[0] == '%' and @reader.word_index == 0
+        @token = Token.new(:comment, word)
+      elsif word == :blank_line
+        @token = Token.new(:blank, "\n")
+      else
+        @token = Token.new(:word, word)
+      end
+      @token
     end
-    @token
   end
+
 
   # To parse LL(1) grammars we need one-token
   # look-ahead, and we sometimes need to be
@@ -131,6 +137,17 @@ class Parser
       [@stack.pop]
     else
       @stack.pop(count)
+    end
+  end
+
+  # pop n tokens from stack
+  # and push them (from bottom to top)
+  # onto th token_stack
+  def push_tokens(n)
+    list = pop_stack_to_list(n)
+    list.reverse!
+    list.each do |token|
+       @token_stack.push token
     end
   end
 

@@ -94,6 +94,65 @@ describe Parser do
   end
 
 
+  it 'can pop tokens from the stack to a list' do
+
+    text = 'one two three'
+    parser = Parser.new text
+
+    token = parser.get_token
+    parser.push_stack token
+    token = parser.get_token
+    parser.push_stack token
+    list = parser.pop_stack_to_list(2)
+    expect(list.map{ |x| x.value}).to eq ['one', 'two']
+
+
+  end
+
+  it 'can push tokens onto the token stack and later get them back (1)' do
+
+    text = 'one two three'
+    parser = Parser.new text
+
+    token = parser.get_token
+    expect(token.value).to eq 'one'
+    parser.push_stack token
+
+    parser.push_tokens(1)
+    expect(parser.token_stack.count).to eq 1
+
+    token = parser.get_token
+    expect(token.value).to eq 'one'
+    token = parser.get_token
+    expect(token.value).to eq 'two'
+
+
+  end
+
+  it 'can push tokens onto the token stack and later get them back (2)' do
+
+    text = 'one two three'
+    parser = Parser.new text
+
+    token = parser.get_token
+    expect(token.value).to eq 'one'
+    parser.push_stack token
+
+    token = parser.get_token
+    expect(token.value).to eq 'two'
+    parser.push_stack token
+
+    parser.push_tokens(2)
+    expect(parser.token_stack.count).to eq 2
+
+    token = parser.get_token
+    expect(token.value).to eq 'one'
+    token = parser.get_token
+    expect(token.value).to eq 'two'
+
+
+  end
+
 
   it 'can parse and render an empty tex document' do
     test('empty.tex')
@@ -114,7 +173,7 @@ describe Parser do
   end
 
   it 'can parse and render environments' do
-    test('environment.tex', verbose: true)
+    test('environment.tex')
   end
 
   it 'can parse and render in-line math' do
