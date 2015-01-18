@@ -42,7 +42,7 @@ class Parser
 
   include Display
 
-  attr_accessor :reader, :token, :stack
+  attr_accessor :reader, :token, :stack, :rendered_text
 
   def initialize(text)
 
@@ -150,7 +150,7 @@ class Parser
   # The content of the node is generally a hash.
 
   def new_node(content)
-    TreeNode.new(@counter.get, content)
+    Node.new(@counter.get, content)
   end
 
   ####################################################
@@ -204,7 +204,7 @@ class Parser
       get_token
     end
     str = pop_stack_to_list(count).string_join
-    node = new_node({type: :header, value: str})
+    node = Node.create(:header, str)
     push_stack node
   end
 
@@ -242,7 +242,7 @@ class Parser
     push_stack @token
     count += 1
     environment_list = pop_stack(count)
-    node = new_node({type: :environment, env_type: "#{env_type}", value: environment_list})
+    node = Node.create(:environment, environment_list, env_type: "#{env_type}")
     push_stack node
   end
 
@@ -271,7 +271,7 @@ class Parser
     else
       str = pop_stack
     end
-    node = new_node({type: :text, value: str})
+    node = Node.create(:text, str)
     push_stack node
   end
 
@@ -286,7 +286,7 @@ class Parser
     count += 1
     str = pop_stack_to_list(count).string_join
     puts "[#{str}]".red
-    node = new_node({type: :comment, value: str})
+    node = Node.create(:comment, str)
     push_stack node
   end
 
@@ -310,7 +310,7 @@ class Parser
     push_stack @token.value
     count += 1
     str = pop_stack(count).join(' ')
-    node = new_node({type: :inline_math, value: str})
+    node = Node.create(:inline_math, str)
     push_stack node
   end
 
@@ -327,7 +327,7 @@ class Parser
       get_token
     end
     str = pop_stack(count).join(' ')
-    node = new_node({type: :display_math, value: str})
+    node = Node.create(:display_math, str)
     push_stack node
   end
 
@@ -361,11 +361,11 @@ class Parser
     command_name = (str.match name_rx)[1].strip
     arg_str = (str.match args_rx)[1]
     args = arg_str.split(',').map{ |x| x.strip}
-    node = new_node({type: :macro, value: str, macro: command_name, args: args})
+    node = Node.create(:macro, str, macro: command_name, args: args)
     push_stack node
   end
 
-  # expr: a switch for the various grammar elements
+  # expr: a switch for various grammar elements
   def expr
     if @token.type == :comment
       comment
@@ -382,7 +382,7 @@ class Parser
     elsif @token.value[0] != '\\'
       text_sequence
     else
-      push_stack @token.value
+      push_stack @token.value ## XX: is it correct to do this?
     end
   end
 
@@ -402,10 +402,11 @@ class Parser
         count += 1
       end
     end
-    push_stack new_node({type: :end_document, value: '\\end{document}'})
+    # push_stack new_node({type: :end_document, value: '\\end{document}'})
+    push_stack Node.create( :end_document,  '\\end{document}')
     count += 1
     body_list = pop_stack(count)
-    node = new_node({type: :body})
+    node = Node.create(:body, '')
     tip = node
     body_list.each do |item|
       tip << item
@@ -413,7 +414,6 @@ class Parser
     end
     # puts "body:".red; node.print_tree
     push_stack node
-
   end
 
   # the main method
@@ -432,10 +432,10 @@ class Parser
     body_node = pop_stack
     head_node = pop_stack
     if head_node.nil?
-      head_node = new_node({type: :header, value: ""})
+      head_node = Node.create(:header, '')
     end
-    if head_node.nil?
-      body_node = new_node({type: :body, value: ""})
+    if body_node.nil?
+      body_node = Node.create(:body, '')
     end
 
     head_node << body_node

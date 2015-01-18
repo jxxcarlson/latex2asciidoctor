@@ -8,6 +8,14 @@ def path file
   ROOT+"/"+file
 end
 
+def bracket_log(arg, tag=nil)
+  if tag
+    puts "#{tag}: ".cyan + "[#{arg}]".red
+  else
+    puts "[#{arg}]".red
+  end
+
+end
 
 
 def test(file, option = {})
@@ -21,6 +29,7 @@ def test(file, option = {})
   parser = Parser.new(text)
   parser.parse
   puts "TEXT PARSED".red if option[:verbose]
+  puts '-------------------------'.yellow if option[:verbose]
   expect(parser.token.value).to eq  END_DOC
   rendered_text = parser.render_tree
   if option[:verbose]
@@ -32,6 +41,20 @@ def test(file, option = {})
   else
     expect(rendered_text.compress).to eq text.compress
   end
+
+end
+
+def test1(file, option = {})
+  text = IO.read(path(file))
+  if option[:verbose]
+    puts "\n\nFile: ".blue + file.red
+    puts '-------------------------'.blue
+    puts text.cyan
+    puts '-------------------------'.yellow
+  end
+  parser = Parser.new(text)
+  parser.parse
+  puts "\n\nFile: ".blue + file.red + " -- parsed".blue
 
 end
 
@@ -71,6 +94,7 @@ describe Parser do
   end
 
 
+
   it 'can parse and render an empty tex document' do
     test('empty.tex')
   end
@@ -90,7 +114,7 @@ describe Parser do
   end
 
   it 'can parse and render environments' do
-    test('environment.tex')
+    test('environment.tex', verbose: true)
   end
 
   it 'can parse and render in-line math' do
@@ -98,7 +122,7 @@ describe Parser do
   end
 
   it 'can parse and render display math' do
-    test('display_math.tex', verbose: true)
+    test('display_math.tex')
   end
 
 

@@ -73,6 +73,7 @@ module Display
     puts '---------------'.cyan
   end
 
+
   def display_tree(node)
     tip = node
     level = 0

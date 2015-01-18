@@ -8,15 +8,19 @@ a coarse-grained version of LaTeX. For
 tests, (concept and progress), see item
 three in the section <<Testing>>.
 
-*Note.* Parser now passes the "identity
+*Note (1)* `Parser` now passes the "identity
 test" for a small number of files,
 e.g., `empty.tex`, 'paragraphs.tex',
 `comment.tex`, `macro.tex`, `inline_math.tex`,
 and `display_math.tex`
 
-
+*Note (2)* `Parser` now uses class `Node << Tree::TreeNode`
+to populate the (still very primitive) AST.  The idea
+is to mimic to some extent the Nodes in @movalinux's
+Asciidoctor project.
 
 .Major Todos
+
 * Create tree instead of list  of nodes
   with nodes stored in content field
 
@@ -67,6 +71,30 @@ though the grammar at he moment is very simple.
 
 === Grammar
 
+Below is the grammar currently used.  It "works" but is not
+satisfactory.  For example, we should have something like
+```
+  environment = BEGIN_ENV expr2 END_ENV
+```
+where `expr2` is an `expr` that doesn't conatin END_ENV.
+For this reason we can't just make a call to `expr`.
+Currently we have
+```
+   environment = BEGIN_ENV env_text END_ENV
+   env_text = { words != END_ENV }
+```
+The effect is to recognize the tokens
+```
+   BEGIN_ENV env_text END_ENV
+```
+and push them onto the stack.  What we need to push instead is
+the sequence
+```
+   BEGIN_ENV parse(env_text) END_ENV
+```
+To be continued ...
+
+
 ----
   # Grammar
   # -------
@@ -75,9 +103,12 @@ though the grammar at he moment is very simple.
   # -----------
   # document = header BEGIN_DOC body END_DOC
   # body = { expr }
-  # expr = { text | macro | environment | inline_math | display_math }
+  # expr = { text_sequence | macro | environment | inline_math | display_math }
+  # text = ordinary prose: a sequence words with no in-line math, display
+  #        math. or macros (control sequences)
   # macro = \command \{ {args} \}
-  # environment = BEGIN_ENV expr END_ENV
+  # environment = BEGIN_ENV env_text END_ENV
+  # env_text = { words != END_ENV }
   # inline_math = $ math_text $
   # display_math = \[ math_text \]
 
@@ -90,6 +121,10 @@ though the grammar at he moment is very simple.
   # --------------
   # BEGIN_ENV = '\begin{' env_name '}'
   # END_ENV = '\end{' env_name '}'
+
+  # NOTES. word_rx = [a-zA-Z]* -- what about punctiation, numerals, etc.?
+  #        Maybe a word should just be: no '\', or no leading '\'
+  #
 ----
 
 A pseudoterminal such as `\begin{theorem}`
@@ -114,11 +149,19 @@ At the moment I am working on
 . making the parser produce
 a tree instead of a list of nodes.
 
-. the method `Parser # render_tree` in module `Display`
+. the method `render_tree` in module `RenderNode`
 
 . passing the "identity test"
 in `parser_spec.rb`:  the yield of the parser
 should be the same as the input text modulo white space.
+This is tested using `test(file)` or `test(file, verbose: true)`
+which is defined in `parser_spec.rb`.  Here is a typical test:
+```
+ it 'can parse and render environments' do
+    test('environment.tex')
+  end
+```
+This approach is inspired by @jirutka's `doctest`.
 Once the parser implements whatever the final grammar
 is and passes this text, another render method
 can be developed to produce the proper Asciidoctor text.
