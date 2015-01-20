@@ -1,10 +1,7 @@
 require 'tree'
-require_relative 'render_node'
 require_relative 'counter'
 
 class Node < Tree::TreeNode
-
-  include RenderNode
 
   attr_reader :content
 

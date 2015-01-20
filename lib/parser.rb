@@ -3,11 +3,31 @@ require_relative 'reader'
 require 'tree'
 include Tree
 require_relative 'counter'
-require_relative 'display'
+require_relative 'display'  # deprecate
 require_relative 'node'
 
-BEGIN_DOC = '\begin{document}'
-END_DOC = '\end{document}'
+BEGIN_DOC = '\\begin{document}'
+END_DOC = '\\end{document}'
+
+$VERBOSE = false
+SAFETY = false
+MAX_SAFE_LINES = 530
+MONITOR_GET_TOKEN = false
+
+NL = '\\\\'
+
+def signal(tag)
+  if @token
+    value = @token.value
+    if value == "\n"
+      value = ''
+    end
+    puts "parse ".red + "#{tag}: ".blue + "#{@token.type}, #{value}" if $VERBOSE
+  else
+    value = ''
+  end
+
+end
 
 class Token
 
@@ -68,6 +88,30 @@ class Parser
   #
   ####################################################
 
+
+  # Let str = 'ho ho ho {'one', 'two'}, ha ha'
+  # Then args(str) = ['one', 'two']
+  def args(str)
+    args_rx = /{(.*)}/
+    arg_match = str.match args_rx
+    if arg_match
+      arg_str = (str.match args_rx)[1]
+      args = arg_str.split(',').map{ |x| x.strip}
+    else
+      args = []
+    end
+    args
+  end
+
+  def first_arg(str)
+    value = args(str)
+    if value.count == 0
+      nil
+    else
+      value[0]
+    end
+  end
+
   # Tokens are obtained from the Reader using Reader # get_word.
   # and in the case of comments, Reader # get_line
   #
@@ -85,14 +129,66 @@ class Parser
       @token = @token_stack.pop
     else
       word = @reader.get_word
+
+      ## WORD
       if word == :end
         @token = Token.new(:end, 'end')
+
+      ## COMMENT
       elsif word[0] == '%' and @reader.word_index == 0
         @token = Token.new(:comment, word)
+
+      ## BLANK LINE
       elsif word == :blank_line
         @token = Token.new(:blank, "\n")
+
+      ## NEW LINE
+      elsif word == '\\\\'
+        @token = Token.new(:newline, NL)
+
+      ## BEGIN ...
+      elsif word =~ /\\begin/
+        arg = first_arg(word)
+        if arg == 'document'
+          @token = Token.new(:begin_document, 'BEGIN_DOC')
+        elsif arg
+          @token = Token.new(:begin_environment, arg)
+        else
+          puts "unknown \\begin token"
+          exit(1)
+        end
+
+      ## END ...
+      elsif word =~ /\\end/
+        arg = first_arg(word)
+        if arg == 'document'
+          @token = Token.new(:end_document, 'END_DOC')
+        elsif arg
+          @token = Token.new(:end_environment, arg)
+        else
+          puts "unknown \\end token"
+          exit(1)
+        end
+
+      ## CONTROL WORD
+      elsif word[0] == '\\'
+        @token = Token.new(:control_word, word)
+
+      ## $
+      elsif word[0] == '$'
+        @token = Token.new(:dollar, '$')
+
+      ## WORD
       else
         @token = Token.new(:word, word)
+      end
+
+      ## REPORT AND RESCUE
+      puts "#{@reader.line_index} #{@token.type}: ".magenta + "#{@token.value}".cyan if MONITOR_GET_TOKEN
+      if SAFETY
+        if @reader.line_index > MAX_SAFE_LINES
+          exit(1)
+        end
       end
       @token
     end
@@ -213,16 +309,45 @@ class Parser
   #
   # XX: the below is too complicated: recode dammit!!
   #
-  def header
+
+  def macro_defs
+    signal('macro_defs')
+    get_token
     count = 0
-    while @token and  @token != :end and @token.value != BEGIN_DOC
-      count += 1
+    while !(@token.type == :comment and @token.value == '%%end_macro_defs')
+      count +=1
       push_stack @token.value
       get_token
     end
     str = pop_stack_to_list(count).string_join
-    node = Node.create(:header, str)
+    node = Node.create(:macro_defs, str)
     push_stack node
+    signal('-- exit macro_defs')
+  end
+
+  def header
+    signal('header')
+    count = 0
+    while @token.type != :begin_document
+      if @token.type == :comment and @token.value == '%%begin_macro_defs'
+        macro_defs
+      elsif @token.type == :comment
+        comment
+      else
+        text_sequence
+      end
+      count += 1
+      get_token
+    end
+    display_stack
+    header_node = Node.create(:header, 'header')
+    header_nodes = pop_stack_to_list(count)
+    header_nodes.each do |node|
+      header_node << node
+    end
+    push_stack header_node
+    display_stack
+    signal '-- exit header'
   end
 
   # environment pushes one node onto the
@@ -246,22 +371,105 @@ class Parser
   # yet implment 'expr' inside 'environmnt'
   #
   def environment(end_token)
+    signal('environment')
+    env_type = @token.value
+    label = nil
+    get_token
+    # bracket_log @token, 'env get_token'
+    count = 0
+    while @token.value != end_token do
+      if @token.value =~ /\A\\label/
+        macro
+        label_node = pop_stack
+        label = (label_node.attribute :args)[0]
+      else
+        expr
+      end
+      count += 1
+      get_token
+    end
+    environment_list = pop_stack(count)
+    if label
+      node = Node.create(:environment, environment_list, env_type: env_type, label: label)
+    else
+      node = Node.create(:environment, environment_list, env_type: env_type)
+    end
+    push_stack node
+    signal '-- exit environment'
+  end
+
+=begin
+
+  def environment1(end_token)
+    signal('environment1')
+    label = nil
     rx = /\\end{(.*)}/
     env_type = (end_token.match rx)[1]
-    push_stack @token
+    # push_stack @token
     get_token
-    count = 1
+    count = 0
     while @token.value != end_token do
-      push_stack @token
+      if @token.value =~ /\A\\label/
+        macro
+        label_node = pop_stack
+        label = (label_node.attribute :args)[0]
+      else
+        push_stack @token
+      end
       count += 1
       get_token
     end
     push_stack @token
     count += 1
     environment_list = pop_stack(count)
-    node = Node.create(:environment, environment_list, env_type: "#{env_type}")
+    if label
+      node = Node.create(:environment, environment_list, env_type: env_type, label: label)
+    else
+      node = Node.create(:environment, environment_list, env_type: env_type)
+    end
+
     push_stack node
   end
+
+  # experimental version
+  def environment2(end_token)
+    signal('environment2')
+    label = nil
+    rx = /\\end{(.*)}/
+    env_type = (end_token.match rx)[1]
+    push_stack @token # BEGIN ENV
+    get_token
+    count = 0
+    while @token.value != end_token do
+      if @token.value =~ /\A\\label/
+        macro
+        label_node = pop_stack
+        label = (label_node.attribute :args)[0]
+      else
+        push_stack @token
+      end
+      count += 1
+      get_token
+    end
+    # COUNT IS NOW THE NUMBER OF TOKENS BETWEEN BE & EE
+    # Phase 1 ended, EE is current token
+    mark = @token
+    push_token @token
+    push_tokens(count)
+    # Phase 2 ended
+    expr
+    # Phase 3 ended
+    count = seek(mark)
+    environment_list = pop_stack(count)
+    if label
+      node = Node.create(:environment, environment_list, env_type: env_type, label: label)
+    else
+      node = Node.create(:environment, environment_list, env_type: env_type)
+    end
+    push_stack node
+  end
+
+=end
 
   # A text sequence is a sequence words with no in-line math, display
   # math. or macros (control sequences).  A text sequence is a piece
@@ -272,17 +480,16 @@ class Parser
   # value: a string representing the text sequence
   #
   def text_sequence
+    signal('text_sequence')
     count = 1
     push_stack @token.value
     get_token
-    while @token.value != '$' and @token.value[0] != '\\'
+    while @token.type == :word
       count += 1
       push_stack @token.value
       get_token
     end
-    if @token.value == '$' or @token.value[0] == '\\'
-      @reader.put_word
-    end
+    @reader.put_word
     if count > 1
       str = pop_stack(count).string_join
     else
@@ -290,9 +497,12 @@ class Parser
     end
     node = Node.create(:text, str)
     push_stack node
+    signal '-- text sequence'
   end
 
+
   def comment
+    signal('comment')
     count = 0
     while @token.value != "\n"
       push_stack @token.value
@@ -302,9 +512,10 @@ class Parser
     push_stack @token.value
     count += 1
     str = pop_stack_to_list(count).string_join
-    puts "[#{str}]".red
+    # puts "COMMENT: [#{str}]".red
     node = Node.create(:comment, str)
     push_stack node
+    signal '-- exit comment'
   end
 
   # inline_math: pops nodes representing tokens in the body
@@ -314,6 +525,7 @@ class Parser
   # value: the ...
   #
   def inline_math
+    signal('inline_math')
     count = 0
     push_stack @token.value
     count += 1
@@ -329,11 +541,13 @@ class Parser
     str = pop_stack(count).join(' ')
     node = Node.create(:inline_math, str)
     push_stack node
+    signal '-- exit inline math'
   end
 
   # Like the previous, but for \[ ... \]
   #
   def display_math
+    signal('display_math')
     get_token
     count = 1
     push_stack @token.value
@@ -345,7 +559,9 @@ class Parser
     end
     str = pop_stack(count).join(' ')
     node = Node.create(:display_math, str)
+    # bracket_log str,  'CREATED AS: display_math'
     push_stack node
+    signal '-- exit display math'
   end
 
 
@@ -365,28 +581,55 @@ class Parser
   # args: the list of arguments, e.g., ['one', 'two'] -- could be nil
   #
   def macro
+    signal('macro')
     str = @token.value
     cumulative_parent_count = paren_count(str)
     while cumulative_parent_count != 0 do
       get_token
       value = @token.value
       cumulative_parent_count += paren_count(value)
-      str << value
+      str << ' ' << value
     end
     name_rx =/\\([a-zA-Z].*?){/
     args_rx = /{(.*)}/
-    command_name = (str.match name_rx)[1].strip
-    arg_str = (str.match args_rx)[1]
-    args = arg_str.split(',').map{ |x| x.strip}
+
+    command_match = str.match name_rx
+    if command_match
+      command_name = (str.match name_rx)[1].strip
+    else
+      command_name = str[1..-1]
+    end
+    arg_match = str.match args_rx
+    if arg_match
+      arg_str = (str.match args_rx)[1]
+      args = arg_str.split(',').map{ |x| x.strip}
+    else
+      args = []
+    end
+
+    # if the macro is '\item', get
+    # the associated text and store it in str.
+    # This will the value field of the node
+    # created below
+    if command_name == 'item'
+      text_sequence
+      text_node = pop_stack
+      item_text = text_node.value
+      str = item_text.gsub('\\item','').strip
+    end
     node = Node.create(:macro, str, macro: command_name, args: args)
     push_stack node
+    signal '-- exit macro'
   end
 
   # expr: a switch for various grammar elements
   def expr
+    signal('expr')
+   #  puts "token: #{@token.value}".yellow
     if @token.type == :comment
+      # puts "comment: #{@token.value}".red
       comment
-    elsif @token.value =~ /\A\\begin/
+    elsif @token.type == :begin_environment
       begin_token = @token.value
       end_token = begin_token.gsub('begin', 'end')
       environment(end_token)
@@ -399,8 +642,9 @@ class Parser
     elsif @token.value[0] != '\\'
       text_sequence
     else
-      push_stack @token.value ## XX: is it correct to do this?
+      push_stack @token.value ## keep going --- XX: is it correct to do this?
     end
+    signal '-- exit expression'
   end
 
   # body: push one node
@@ -411,10 +655,11 @@ class Parser
   #
   # NOTE: This will eventually be a tree
   def body
+    signal('body')
     count = 0
-    while @token.value != END_DOC
+    while @token.type != :end_document
       get_token
-      if @token.value  != END_DOC
+      if @token.type  != :end_document
         expr
         count += 1
       end
@@ -423,24 +668,24 @@ class Parser
     push_stack Node.create( :end_document,  '\\end{document}')
     count += 1
     body_list = pop_stack(count)
-    node = Node.create(:body, '')
-    tip = node
-    body_list.each do |item|
-      tip << item
-      tip = item
+    body_node = Node.create(:body, '')
+    body_list.each do |node|
+      body_node << node
     end
     # puts "body:".red; node.print_tree
-    push_stack node
+    push_stack body_node
+    signal '-- exit body'
   end
 
   # the main method
   def parse
+    signal('parse')
     get_token
     header
-    if @token and @token.value == BEGIN_DOC
+    if @token and @token.type == :begin_document
       get_token
       body
-      if @token.value != END_DOC
+      if @token.type != :end_document
         error 'missing END_DOC'
       end
     else
@@ -455,12 +700,15 @@ class Parser
       body_node = Node.create(:body, '')
     end
 
-    head_node << body_node
+    document_node = Node.create(:documentt, 'document')
+    document_node << head_node
+    document_node << body_node
     if $VERBOSE
       puts "yield of parse".red
-      head_node.print_tree
+      document_node.print_tree
     end
-    push_stack head_node
+    push_stack document_node
+    signal '-- exit parse'
   end
 
   ####################################################
@@ -468,10 +716,6 @@ class Parser
   #                   Display
   #
   ####################################################
-
-  def render_tree(node=top_stack)
-    node.render_tree
-  end
 
   def error message
     puts "ERROR: #{message}".red

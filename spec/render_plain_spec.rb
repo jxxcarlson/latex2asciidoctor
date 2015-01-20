@@ -1,8 +1,8 @@
 require 'rspec'
 require_relative '../lib/node'
-require_relative '../lib/render_node'
+require_relative '../lib/identity_render_node'
 
-describe RenderNode do
+describe IdentityRender do
 
   it 'can render a basic node (e.g., one whose value is a string)' do
 

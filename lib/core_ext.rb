@@ -54,7 +54,7 @@ class String
   end
 
   def compress
-    self.gsub(/ |\n/, '')
+    self.gsub(/ |\n|\t/, '')
   end
 
   def eol_edit

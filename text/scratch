@@ -1,3 +1,59 @@
+\begin{equation}
+  \begin{array}
+  A & B \\
+  C & D
+  \end{array}
+\end{equation}
+
+
+
+\begin{theorem}
+Note that the equation
+\[
+  x^6 = 1
+\]
+has six complex solutions.
+\end{theorem}
+
+\begin{theorem}
+As we see now, $a^2 + b^2 = c^2$.
+In addition the equation
+\[
+  x^6 = 1
+\]
+has six complex solutions.
+\end{theorem}
+
+
+\begin{theorem}
+\label{ th-pythag }
+As we see now, $a^2 + b^2 = c^2$.
+\end{theorem}
+
+
+\begin{definition}
+A point is that which has no breadth
+\end{definition}
+
+\begin{equation}
+\label{eq-splittransformation}
+  T = \left(
+  \begin{array}{ccccc}
+  0 & -1 & 0 & 0 & 0 \\
+  1 & 0 & 0 & 0 & 0 \\
+  0 & 0 & 1 & -\omega & 0 \\
+  0 & 0 & 0 & 0 & 1 \\
+  0 & 0 & 0 & -1 & 0
+  \end{array}
+  \right)
+\end{equation}
+
+
+
+
+
+
+
 
 %% This is a test file
 

@@ -8,24 +8,37 @@ a coarse-grained version of LaTeX. For
 tests, (concept and progress), see item
 three in the section <<Testing>>.
 
-*Note (1)* `Parser` now passes the "identity
+.Notes
+--
+. `Parser` is now recursive in view
+of the productions
++
+----
+  expr = { item | text_sequence | macro | environment | inline_math | display_math }
+  environment = BEGIN_ENV {label | expr } END_ENV
+----
+Look at the tests for the files `matrix.tex` (nested environments) and
+`itemize.tex` (`\items` inside `itemize` environment.
+
+. There are two backends, one for the production of tex,
+the other for the production of asciidoc.  The first
+is mainly for verigying the operation of the parser.
+
+. `Parser` now passes the "identity
 test" for a small number of files,
 e.g., `empty.tex`, 'paragraphs.tex',
 `comment.tex`, `macro.tex`, `inline_math.tex`,
 and `display_math.tex`
 
-*Note (2)* `Parser` now uses class `Node << Tree::TreeNode`
+. `Parser` now uses class `Node << Tree::TreeNode`
 to populate the (still very primitive) AST.  The idea
 is to mimic to some extent the Nodes in @movalinux's
 Asciidoctor project.
+--
 
 .Major Todos
 
-* Create tree instead of list  of nodes
-  with nodes stored in content field
-
-* Get recursive
-
+* Continue adding to the grammar (and hence the parser and backends}
 
 == Design notes
 
@@ -102,15 +115,17 @@ To be continued ...
   # Productions
   # -----------
   # document = header BEGIN_DOC body END_DOC
+  # header = { text_sequence | comment | macro_defs }
+  # macro_defs = '%%begin_macro_defs' { defs } '%%end_macro_defs'
   # body = { expr }
-  # expr = { text_sequence | macro | environment | inline_math | display_math }
-  # text = ordinary prose: a sequence words with no in-line math, display
+  # expr = { item | text_sequence | macro | environment | inline_math | display_math }
+  # text_sequence = ordinary prose: a sequence words with no in-line math, display
   #        math. or macros (control sequences)
   # macro = \command \{ {args} \}
-  # environment = BEGIN_ENV env_text END_ENV
-  # env_text = { words != END_ENV }
+  # environment = BEGIN_ENV {label | expr } END_ENV
   # inline_math = $ math_text $
   # display_math = \[ math_text \]
+  # item = '\item` text_sequence
 
   # Terminals:
   # ----------
@@ -133,6 +148,48 @@ matches `\end{definition}`, etc.
 
 WARNING: the production for `environment` is not yet implemented per
 the grammar.
+
+==== The Parsing Process for `environment`
+
+The table with items 1-5 below describes the parsing
+process for `environment`.
+Each line in the table  has the form
+----
+  label, stack | input
+----
+Items of the form `(x)` are nodes, items of the
+form `[y]` are tokens, and other items are words
+of input.
+
+
+
+
+----
+  1. ?, (node) ... (node) | be 1 ... 2 ee ...
+  2. ee, [2] ... [1] [be] | ...
+  3. [ee] (node) ... (node) | [1] ... [2] [ee] ...
+  4. (NODE) ... (NODE) [ee] (node) ... (node) |  ...
+  5. (ENV_NODE) (node) ... (node) | ...
+----
+
+* Phase 1: The parsers sees `be`, which has the form `\begin{foo}`.  The method
+  `environment` is called.  In phase (1) it gets tokens repeatedly
+  until it sees `ee = \end{foo}`.  The state is now (2).
+
+* Phase 2: Push `[ee]` onto the input stream and save it as `mark`;  push `[2] ... [1]`
+  in reverse order onto the input stream; pop `[be]`, push `mark`.
+  The state is now as in (3).
+
+* Phase 3: call `expr`.
+
+* Phase 4: `expr` has returned. Set n = depth([ee]). Create ENV_NODE,
+  make (NODE) ... (NODE) its descendants, pop [ee], push ENV_NODE onto stack.
+  The state is as in (5).
+
+* Phase 5: return
+
+
+
 
 ==== Testing
 
@@ -165,3 +222,4 @@ This approach is inspired by @jirutka's `doctest`.
 Once the parser implements whatever the final grammar
 is and passes this text, another render method
 can be developed to produce the proper Asciidoctor text.
+

@@ -117,7 +117,7 @@ class Reader
       get_word
       word_count += 1
       if flag == :verbose
-        puts "#{word_count}: ".blue + "#{@current_word}".magenta
+        puts "#{word_count}: ".blue + "#{@current_word}".yellow
       end
     end
     @current_word

@@ -1,0 +1,583 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage[latin1]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{latexsym}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bA}{\mathbb{A}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bC}{\mathbb{C}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\1}{{\rm 1}\!{\rm I}}
+\newcommand{\di}{\partial}
+\newcommand{\dbar}{\bar{\partial}}
+\newcommand{\Qbar}{\bar{\bQ}}
+\newtheorem{ex}{Exercise}
+\newtheorem{example}{Example}
+\newtheorem{thm}{Theorem}
+
+\begin{document}
+\begin{center}
+{LECTURE PLAN FOR MATH 672}\\ \textbf{\textit{TORIC GEOMETRY}}
+\\
+\textbf{Fall 2014}
+\end{center}
+\section{Aug 25}
+Introduction
+\section{Aug 27-29: read 1.0}
+
+% \end{document}
+
+Principal concepts:
+\begin{enumerate}
+\item The Coordinate Ring of an Affine Variety. Define the function field.
+\item $\bC[X]$ integral domain iff $I(X)$ prime iff $X$ irreducible.
+\item functoriality of Spec.
+\item Affine varieties are isomorphic if so are their coordinate rings.
+\item Points correspond to Maximal ideals.
+\item Zariski topology.
+\item Localization. Do example of line minus a point.
+\item Introduce the affine torus via localization.
+\item Normality: do the node as another example of non-normal variety (Book does cusp). Do normalization map for the node.
+\item Local rings. Maximal Ideals. Zariski Tangent space. Smoothness. Smooth implies normal - viceversa is not true.
+\item Products of affine varieties.
+\end{enumerate}
+
+\end{document}
+
+
+Questions that arose:
+\begin{enumerate}
+	\item Discussion of Spec as a functor. Difference between Spec and Specmax.  (related to spectrum of a matrix?) Points = maximal ideals. Mention relevance of Nullstellensatz, and Notherian condition giving equivalence to solution sets of finite systems of equations. Contravariance.
+\begin{itemize}
+	\item Classical affine AG. Bijection between varieties and solution sets to finite lists of polynomials.
+	\item Because polynomial ring is Notherian can replace that with ideals.
+ 	\item Natural functions between varities and ideals. To make it bijective, require ideal to be radical and the field to be algebraically closed (Nullstellensatz). ($V(I)=\phi$ iff $I=(1)$)
+	\item Spec shifts attention to coordinate ring. Remember to always think of $R$ as the ring of functions for the space $Spec(R)$.
+            \item Calculus definition of function. Show how it essentially it is defined by pullbacks of functions on the space.
+	\item Define a little bit what it means to be a functor.
+\end{itemize}
+\item Zariski topology: give some intuition and difference wrt ordinary topology.
+\begin{itemize}
+	\item why axioms of a topology are satisfied.
+	\item open sets are dense. Very coarse topology.
+ 	\item for curves it is the finite complement topology. Do example of cutting down a point in a conic.
+\end{itemize}
+	\item Open sets defined by localization.
+\begin{itemize}
+\item start with example of $\bC$ minus a point.
+\item  why the complement of a hypersurface is itself an affine variety, and what is its ring of regular functions.
+ \end{itemize}
+  \item Discuss torus. Point out difference between algebraic torus and  topological (complex) torus. Homotopy equivalent.
+	\item Various notions of functions on an algebraic variety:
+\begin{itemize}
+	\item Regular functions;
+	\item Sheaf of regular functions;
+	\item Rational functions;
+	\item Functions regular at a given point (local ring).
+           \item Schemely: residue field.
+\end{itemize}
+	\item Zariski Tangent Space.
+\begin{itemize}
+	\item Recall abstract definition from differential geometry: tangent space is space of linear functionals that satisfy Leibnitz.
+	\item Show that satisfying Leibnitz is equal to vanishing on elements of $M^2$.
+	\item Do parallel with tangent vectors as velocity vectors for curves.
+	\item Talk about maps from spec of the dual numbers. In order to do so, must also show how to think of pullback of functions gives $f(x)$.
+          \item Do example  of tangent plane at the origin to $\bC^2$.
+	\item Example of tangent at a node, or a cusp. (Do one example with the $M/M^2$, another with the maps from spec of the dual numbers.)
+\end{itemize}
+	\item Small discussion about dimension: geometric definition= longest chain of nested irreducible subvarieties.
+            \item Normality and Normalization.
+\begin{itemize}
+		\item We like smooth. But we settle for not too singular.
+		\item Normal implies smooth in codimension $1$.
+                      \item Normalization is canonical.
+                      \item $X$ is normal iff the coordinate ring is integrally closed. This means that if a rational function is a solution to a monic polynomial equation with regular coefficients, it is actually regular. How to think of this. If you have a function that actually has poles, you can't cancel the poles by taking regular linear combinations of powers of it where the leading coefficient is monic (and hence achieves the highest order of poles). Normal is almost equivalent to smooth in codimension one. In fact Serre tells us:
+\begin{description}
+	\item[R1] singular in codimension 2 or higher
+	\item[S2] if a rational function has no poles in codimenision one, then it is regular. (this is true for lci in smooth variety, etc...)
+\end{description}
+\item  Normalization is obtained by taking the integral closure of the coordinate ring inside the ring of rational functions. The inclusion of rings gives a birational surjection from the normalization to the original variety.
+\item Do explicitly example of node or cusp.
+\end{itemize}
+\item Product of affine varieties is affine. Show by illustrating universal property and see it gives rise to tensor product of coordinate rings.
+\end{enumerate}
+
+% \end{document}
+
+\section{Sep 3-5: read 1.1,1.2}
+General discussion:
+\begin{itemize}
+	\item Introduce one more sheaf of functions: $\mathcal{O}^\ast$, where the operation is multiplication. In the case of a torus these functions are {\bf monomial functions} or characters.
+	\item Note that characters here are the same things as {\bf linear} characters in representation theory. Because tori are commutative, all irreducible representations are one-dimensional, and therefore the corresponding characters are linear. The statement on page $11$: assume that a torus acts linearly on $V$, then the action maps can be simultaneously diagonalized etc. is precisely the statement that every representation of the torus decomposes in irreducible representations.
+	\item Note that characters of a torus are isomorphic to $(\bZ^n,+)$, but the isomorphism is non-canonical, just how there isn't in general a canonical isomorphism of the torus $T$ with $(\bC^\ast)^n$.
+	\item Group homomorphism between tori are given by (collection of characters). Do a couple example to see that Images are tori, and Kernels are unions of tori (subgroups).
+	\item Do an example to see that the closure of a subgroup of a torus inside affine space can be different depending on:
+	\begin{itemize}
+		\item what is the subgroup.
+		\item what is the choice of affine space that the torus lives in.
+	\end{itemize}
+	\item Interpret the classical sequence in affine algebraic geometry in this context:
+	$$
+	\begin{array}{ccccccccc}
+	0 & \to & I_x & \to &\bC[x_1, \ldots, x_n] & \to & \bC[X]= \bC[S] & \to &  0\\
+	    &      &   &   & \downarrow & & \downarrow & & \\
+	    & & & & \bC[x_1^{\pm 1}, \ldots, x_n^{\pm 1}] & \to & \bC[M]& & \\
+	    	    &      &   &   & \updownarrow & & \updownarrow & & \\
+	    & & & & (\bC[x_1^{\pm 1}, \ldots, x_n^{\pm 1}] )^\ast & \to & \bC[M]^\ast& & \\
+	    	    	    &      &   &   & \updownarrow \cong & & \updownarrow \cong & & \\
+	    & & L& \to & \bZ^n & \to & S\subset M & & \\
+	\end{array}
+	$$
+	In toric varieties the KEY point is that characters go to characters. $x_i$ can be thought as special characters of the torus in the ambient space, that simultaneously: give a basis for the character lattice that identifies an isomorphism of the torus with a product of $\bC^\ast$'s AND choose an affine space for the torus to sit in. We ask that the affine algebraic variety $X$ has a torus inside! Then naturally the characters of the torus are regular functions on the torus and rational functions on $X$. $\bC[X]$ is generated by those regular functions on the torus that extend to regular functions on all of $X$.
+	Now if the above picture is clear, the three alternative constructions of a toric variety fall out of it immediately:
+	\begin{enumerate}
+		\item The assignment $x_i \mapsto \chi^{m_i}$ is equivalent to giving a map of tori.
+		\item The toric ideal point of view comes from looking at the generators of $I_X$ under the additive isomorphism. There a little bit of weirdness because $I_x$ is ``functions that are $0$ on $X$, whereas the sub lattice $L$ gives characters that restrict to $1$ on the toric variety.
+		\item The semigroup point of view comes from looking at the characters of $M$ that extend to regular functions of $X$.
+	\end{enumerate}
+	\item Do example of rational normal cone of degree $2$ carefully and extensively. Discuss rational normal cones: examples of varieties which are isomorphic but not affine linear equivalent. Preview projective space, and rational normal curves.
+\end{itemize}
+
+\end{document}
+
+{\it
+People seemed to collectively focus on the importance and build up to Theorem 1.1.17 (the four equivalent characterizations of affine toric varieties). Also of note as perceived important topics: affine semigroups, toric ideals, the connection to linear algebra and the potential computing/intuition power that has.
+Here are some questions (in no particular order of importance):}
+\begin{enumerate}
+\item In general, several people were interested in seeing counterexamples--the text provides lots of illustrative examples, but few/no examples of failures. Specific suggestions include
+Lemma 1.1.16 not splitting into a direct sum (i.e., does anything interesting happen if the subspace is not stable's
+\item Following Theorem 1.1.17, and the statement "V is a toric variety precisely when the functions that extend are determined by the characters that extend," what does it look like when this isn't happening? Are there good examples of functions which clearly do not extend?
+{\bf This first two questions have to do with the philosophy that monomials should go to monomials. We can interpret this in yet another way... there is an action of the torus (of $V$) on itself that gives dually an actions on functions. Then $V$ is obtained by putting the torus in some ambient space and closing it up, and the functions on $V$ are the functions that extend to regular functions on the closure. But the functions $f$ and $tf$ ``go to infinity in the same places", and those places should be ``at infinity" in the big ambient space we are putting the torus. In other words,  $f$ is regular for $V$ iff $tf$ is. This is equivalent to asking that the set of regular functions for $V$ is closed under the action of $T$, and geometrically that the action of $T$ extends to the closure of $T$ (=V) in the ambient space.
+}
+\item An easy to describe variety which is not a toric variety (deleting the "affine" is easy by going projective, but I think this is geared more towards "how do we know a variety isn't toric?"--I think theorem 1.1.17 answers this decently well, but it might be a useful application to mention about 1.1.17?).
+\textbf{An easy example of a variety which is not toric but it is isomorphic to a toric variety is a line not through the origin in the plane. Things that cannot be isomorphic to toric varieties are for example elliptic curves or higher genus curves in general. Non rational surfaces etc}
+\item Are characters the same as characters from number theory/representation theory?
+\item The rational normal cone of degree d: several people asked its significance and requested a bit of a discussion about its construction.
+{\bf See above}
+\item Proposition 1.1.8 had a couple detail-related issues in it.
+\begin{itemize}
+\item "It follows that the image ( $\phi_A(T_N)$ ) is Zariski open in $Y_A$." Why? {\bf talk a little bit about Zariski closure}
+\item The diagram conclusion at the very end.
+\end{itemize}
+\item Right before Proposition 1.1.9, they say "It follows easily that the binomial...vanishes on the image of $\phi_A$." Why?
+{\bf This should be addressed when talking about toric ideals, and same with the point below}
+\item Is there anything to the $L_+$ and $L_-$ beyond rewriting things to be in $\bN$?
+\item Some more discussion on the tensor product paragraph (near the top of page 12). I think these questions were just due to some lack of comfort with tensor products? That, and why we write  $T_N$ (where N is the one-parameter subgroup) instead of $T_M$ (with M the characters), when we later focus so much on M.
+{\bf Point out that $N \otimes \bC^\ast \cong T$ whereas $M \otimes \bC^\ast \cong T^\ast$}
+\end{enumerate}
+These are the most common/biggest things people were asking about. On a side note, I found our discussion on the way to Boulder--about how focusing on functions leads naturally to toric varities as useful examples/objects--really useful in tying together motivations.
+
+\end{document}
+
+\section{Sep 15: Read 1.3}
+Begin class by reviewing the main ideas of the previous week: an affine toric variety is an affine variety with a notion of ``monomial functions", such  that monomial functions from the ambient space restricts to monomial functions on the variety.
+
+Here's the summary of questions about  section $1.2$:
+\begin{enumerate}
+ \item Relative interior vs interior.
+{\bf Relative interior is what you would call the interior of a cone as an abstract object. The interior obviously depends on how the cone lives in some ambient space}
+\item How to think about dual cones.
+\item Why we start with cones in one-parameter families and eventually get to characters.
+{\bf These two questions are crucial, and must be illustrated both ``philosophically" and with examples.
+
+Philosophically: you start with a torus, and you are seeking to embed it in some affine space. The cone $\sigma$ selects a bunch of one parameter subgroups in the torus. Each of these subgroups has a limit at $0$, and you WANT your embedding into affine space to be such that the image of such limits is at a finite spot, so that such limits appear as points in the Zariski closure of the image. The cone $\sigma^\vee$ gives all characters that do in fact send such zeroes to zero. Such characters are therefore promoted to become the regular monomial functions on the toric variety, and provide the desired embedding. (This is so cool!)
+
+Examples: useful to begin with one dimensional examples, which are almost trivial, but do illustrate the above philosophy. Then example of an affine chart of the blowup of the plane at a point.
+}
+
+\item Difference between convex polyhedral cones and rational polyhedral cones.
+{\bf as far as I understand, the only difference is the interplay with the integral structure: the finite set of generators are required to be lattice points for a rational cone. Note that a non rational cone gives rise to a not finitely generated semigroup. Give a two dimensional example.}
+\item For the latter, do we just need the relevant set S to be contained in a lattice?
+{\bf Yes. Not a lattice, but the lattice}.
+\item Some of the Figures are unclear about why they are/are not rational (specifically requested were why 3 and 4 were not)
+{\bf I don't think the book claims 3 and 4 are not rational, it only does not supply sufficient information to deduce that they are.}
+\item What's the motivation behind cones? Do they have relevance outside of toric varieties?
+Note: our discussion 30 minutes ago was extremely instructive on answering this question and the "how do think about dual cones" one
+\item Do simplicial complexes provide a good intuition, so far as "building blocks" and "gluing" ideas go?
+{\bf Yes and no. The basic idea of constructing interesting space from simple ones is there, but while simplicial complexes are assembled by things glued along closed subvarieties (hence ``small" with respect to the building blocks), algebraic varieties are glued along big open dense sets. It is somehow the combinatioralization of their one parameter subgroups with limits that takes a shape similar to CW complexes.}
+\item A couple people asked for something like a walk through of example 1.2.22.
+\item What falls apart when we don't require strong convexity?
+{\bf The variety contains a torus factor. This is further explored in section $1.3$. Leave this for last.}
+\item At least half of the emails asked about if the Separating Lemma has further uses
+{\bf  It does, but we will see later more precisely why. Intuitively, the Separating Lemma means that given two adjacent cones sharing a face, there exist some monomials that are regular for one cone but not for the other, and such that the inverse monomial reverses the situation.}
+\item There's some general confusion about exactly what the pairing between a cone and its dual is/should be thought of.
+{\bf What it really is is log-evaluation of functions. The log part just means to transfer the multiplicative structure of the semigroup of monomial functions into an additive structure.}
+\end{enumerate}
+
+\section{Sep 17, Sep 19: read 2.0, Sep 22}
+Highlights:
+\begin{enumerate}
+\item The correspondences regarding points on an affine variety.
+\item The link between saturation and normality (and by extension strongly convex cones).
+\item Fixed points of torus actions.
+\item Equivalence of toric varieties (ties in to the last homework problem).
+\end{enumerate}
+Problems:
+\begin{itemize}
+\item Overall, there was some frustration with the large amount of notation/terminology, as well as the extensive referencing back to earlier things.
+\item Several people seem to want to see (some of the) the same examples given in the section, but with you walking through them. (Examples of requested examples include 1.3.11 and 1.3.19.)
+\item The book mentions that the correspondence between points of V and maximal ideals in $\bC[S]$ is "standard." A few requests to go over this correspondence.
+\item Trouble understanding "saturation."
+\item Some confusion about the monic polynomial in the proof of 1.3.5 (a) to (b).
+\item Why in Example 1.3.9 can they use 1/2, when 1/2 is not a natural number?
+\item Theorem 1.3.12 seems important; some requests to discuss the proof. (Including, but not limited to, how "all smooth affine toric varieties" arise in this way?)
+\item How does this all fit into a bigger geometric picture--a specific question: why do we care about equivariance in relation to the torus action?
+\end{itemize}
+Overall, I think some/much of the big picture was lost in the terminology and notational slog. If the section amounts to listing "Properties of Affine Toric Varieties," then it seems like many are wondering about the motivation for it all.
+
+\noindent{\bf Big picture}
+
+Toric geometry is a ``special" version of algebraic geometry, characterized by this additional structure coming from a torus action with nice properties. This allows, instead of focusing on all regular functions like in general algebraic geometry, to single out a class of special regular functions (the monomial functions) which turn out to contain sufficient information to describe the geometry of the toric variety. Focusing on such functions - which naturally form a semigroup under multiplication- allows to combinatorialize the algebraic geometry of toric variety. The whole game of toric geometry is to take algebro-geometric concepts, which typically are pretty hard to study, and show how for toric varieties such concept translate to combinatorial concepts. Typically combinatorics is notiationally intensive, but a lot more friendly for computations that algebra or geometry.
+Part of the reason that for us this picture may be a little elusive, is that for many of you, you are at the same time learning the concepts and combinatorializing them... but my hope is that by doing this you will have a large collection of examples where you can do computations with these concepts.
+
+\noindent{\bf Points and Semi Group Homomorphisms}
+
+The correspondence between points of an affine algebraic variety and maximal ideals is classical, and it relies on the fact that on well enough behaved spaces you can find functions that ``separate points" (i.e. that vanish at a given point and not at another).
+
+Points and semigroup homomorphism is just ``evaulation": we are familiar with points corresponding to their coordinates - but notice that this is just the selection of a special class of regular functions that ``pin down the point" uniquely. If we evaluate the points on ALL monomial functions, we have enough information to recover the points uniquely. Note that if you choose a set of generators for $S$, you get an affine embedding of your toric variety and the values of those functions ARE the affine coordinates for that embedding. The ``semi-group" homomorphism point of view is non-committal, in that it does not want to pick any particular embedding.
+Do as an example the rational normal cone of degree $2$ with two different embeddings.
+
+\noindent{\bf Torus Action}
+
+Similarly, the way the torus $T_N$ acts on $X$ is constructed in such a way that if you choose an affine embedding, it becomes the restriction of the natural linear action of the torus in the ambient space. That saying, it follows that the unique fixed point in affine space is the origin, and therefore an affine toric variety can have at most one fixed point, and what one has to look at is whether the origin belongs to the closure of the maps $\phi_A$. Again, the semi-group homomorphism allows us to be non-committal and just identify the fixed point with the very special homomorphism (when it exists) sending the vertex of the cone to 1 and everything else to $0$.
+
+Also it gives a tautological point of view on the action. Do one example (on whiteboard) .
+
+\noindent{\bf Strong Convexity}
+
+The key point here is that strong convexity in one of the vector spaces corresponds to full dimensionality in the dual vector space.
+
+Now if $\sigma^\vee$ is strongly convex, then the toric variety has a torus fixed point, corresponding to sending all points of $S$ but the origin to $0$.
+If  $\sigma^\vee$ is not strongly convex, then the toric variety has a torus factor.
+
+If $\sigma$ is strongly convex, then $\sigma^vee$ is full dimensional, implying that the torus $T_N$ acts with a finite kernel on $X$. The quotient torus, which acts effectively on an open dense set of $X$, has the same dimension.
+If $\sigma$ is not strongly convex, then $\sigma^vee$ is not full dimensional, implying that the torus $T_N$ acts with a torus kernel on $X$, and hence that the effective torus has lower dimension. (Not enough regular functions to give a variety of the appropriate dimension).
+
+\noindent{\bf Saturation and Normality}
+
+The condition of $S$ being saturated is definitely necessary for normality. Otherwise you have a monomial strictly rational function whose power is regular, and that violates regular functions being integrally closed. It is a bit surprising that it is also sufficient, but it follows from the fact that characters in $S$ are a linear basis for $\bC[S]$.
+
+Do example of the cusp and the line with lattice $2\bZ$.
+
+\noindent{\bf Smoothness}
+
+Key point is that smoothness can be (1) reduced to strongly convex $\sigma^\vee$ (aka maximal dimensional cones in $N$), and then the analysis is done just by observing the tangent space at the fixed point. Here the dimension of the Zariski tangent space is easily seen to be the dimension of a Hilbert basis.
+
+Then the important fact to remember about polyhedral geometry is that a strongly convex cone is generated by the ray generators. Then when such generators actually generate the lattice over the integers is precisely when the Hilbert basis of the dual cone is also given by the ray generators.
+
+\noindent{\bf Toric morphisms}
+The torus acting on a toric variety  - or equivalently, the concept of monomial functions- being the additional structures crucial to toric varieties, it makes sense that we ask morphism of toric varieties to preserve such structure. This takes various incarnations, from the more geometric to the more combinatorial:
+\begin{enumerate}
+	\item the morphism preserves the torus action. This is the concept of a group-equivariant function.
+	\item the morphism preserves monomial functions. This amounts to saying that the pullback of an element of $S_2$ should be an element of $S_1$. Obviously, when this happens, then you get a semi-group homomorphism (because the pullback of functions is an algebra homomorphism and we are here just focusing on the multiplicative structure).
+	\item the morphisms maps the torus into the torus as a group homomorphims.
+	\item the last point also shows that you should get naturally a group homomorphims on the one parameter subgroup lattices $N$. Finally one can show that such a homomorphism defines a map of affine toric varieties if and only if it sends $\sigma_1$ inside $\sigma_2$.
+	Good examples to do: projection of the plane to the line. Map from $\bC^2$ to the quotient by $\mu_2$.
+\end{enumerate}
+
+\noindent{\bf Faces of cones}
+
+A special case of toric morphisms are given by inclusions of the faces of $\sigma$. These define a toric morphism which is the inclusion of a Zariski open in the affine toric variety.
+This is because a face $\tau$ is defined by intersection with a hyperplane in $N$, which corresponds to a character $m$ in $M$. It follows that $S_\tau$ is generated by $S$ and $\pm m$. Which means that the corresponding coordinate ring  is a localization and therefore the toric variety is an open subset.
+Point out importance in terms of patching together affine varieties to get something more interesting!
+
+\noindent{\bf Blowup of the plane at a point}
+Should work out carefully this example, both from a classical and a toric perspective.
+
+\noindent{\bf Quotients by finite groups}
+Should talk a little bit about quotients by finite groups, orbit spaces, and  invariant functions.
+A sub lattice of a lattice can be thought as selecting some functions that are invariant under some group - what group? The kernel of the induced homomorphism of tori.
+Do $A_n$ singularities as an example.
+
+
+
+\section{Sep 24: read 2.1, 2.2}
+
+\textbf{General}
+\begin{itemize}
+\item There were some requests to duplicate the "relationship between classical algebraic geometry and toric algebraic geometry" discussion in the projective case (if there's anything worth noting of difference). This may feed into the next point:
+\item There's some lack of familiarity/experience with projective spaces in general and functions on them. I think this could easily be a "figure this out outside of class" situation (the first sentence in the chapter provides a reference), but there were a few people who haven't dealt with them as much as the text might assume.
+\end{itemize}
+
+\noindent\textbf{Section 2.0}
+
+\noindent\textbf{Highlights:}
+\begin{enumerate}
+\item Projective spaces in general, including homogeneous coordinates and rational functions.
+\item Affine pieces of projective varieties.
+\item The fact that projective varieties are unions of affine open sets.
+\end{enumerate}
+
+\noindent{\bf Questions:}
+\begin{enumerate}
+\item There's some concern about the section's initial claim that we haven't defined a toric variety yet.
+\item Why is the affine variety defined by the homogeneous coordinate ring called the "affine cone" of V?
+\item Can the grading of the homogeneous coordinate ring give information about the affine variety that it defines?
+\item State ment 2.0.8 can generalize to any finite intersection, right?
+\item Explicitly writing out the second half of 2.0.8 (i.e., as the set of $f \in C[V]$ s.t. blah blah blah).
+\item When does Proposition 2.0.4 have a converse?
+\item Parallels and differences between affine localization and projective localization.
+\item Several people asked about weighted projective spaces, and why/when they're relevant.
+\item There's a general lack of familiarity with the Segre embedding.
+\item Lack of general familiarity with graded rings.
+\end{enumerate}
+
+\noindent{\bf Crash course in Projective Geometry}
+\begin{enumerate}
+	\item Projective Space: compactification of affine space. Space of linear subspaces (or linear forms) of a vector space. In some sense it is a quotient space.
+	\item Issue: invariant functions are only the constants, hence very little information is contained in the ring of regular functions  for the quotient.
+	\item Solutions:
+	\begin{enumerate}
+		\item rational functions/ sheaf of functions.
+		\item look at $\bC^\ast$ equivariant functions.
+	\end{enumerate}
+	\item The second point of view gives rise to the homogeneous coordinate ring. The key difference between the homogeneous coordinate ring and the regular ring of $V$ is the grading.
+	\item Now the key point about  equivariant functions is that they can be considered as equations, in the sense that their vanishing locus in $V$ is a cone with vertex the origin (i other words it is ruled by linear subspaces). Hence the terminology of affine cones.
+	\item Ideals generated by equivariant functions (called homogeneous ideals), give rise to projective varieties. Again there is a graded ring (namely the quotient ring of the homogeneous coordinate ring of projective space by the ideal) that controls all functions of the variety, and there is an algebraic procedure to extract this information (the functor Proj).
+	\item Bijection between homogeneous ideals and projective varieties needs a new adjective -  "saturated" on the ideal side, because the maximal ideal of the origin in $V$ defines the empty set in projective space.
+	\item Affine pieces in projective space induce affine pieces on any projective variety embedded in a given projective space. Localization works exactly the same as before. The only thing is when you localize a homog coord ring you only want to take the degree $0$ part of the localized ring - these are functions that are invariant on the orbit.
+	 \item Weighted projective spaces arise when you change the representation on the arrival vector space (when constructing equivariant functions) to a non-diagonal representation. You may consider it these as parameter spaces for other types of curves (other than lines through the origin). From the algebraic point of view this amounts to altering the grading in the homogeneous coordinate ring. The relevance of WPS is that they provide simple examples of proper spaces with mild (quotient) singularities at some points (orbifolds) - but this is another story...
+	 \item Segre embeddings. Should talk about maps between projective spaces (and projective varieties in general). Then get embedding of a product of projective spaces into a large projective space.
+	 \item If time permits talk about line bundles.
+	\end{enumerate}
+
+
+\section{Sep 26}
+
+{\bf Section 2.1}
+
+\noindent{\bf Highlights:}
+Finding the torus of a projective toric variety.
+Proposition 2.1.4.
+Projective normality vs. affine normality.
+Affine pieces of a projective toric variety can give different semigroups.
+Proposition 2.1.8.
+
+\noindent{\bf Questions:}
+\begin{enumerate}
+\item Requests to see some examples in class, in particular:
+2.1.3
+\item At the end of 2.1.5, how does $x_1^2 - x_2$ vanish at that point?
+\item 2.1.7: how to get $\bZ ' A.$
+\item Compare/Contrast with $\bZ ' A$ (introduced on page 58) and $\bZ A$.
+\item Can we run through the proof (or idea thereof) of Proposition 2.1.6?
+\item Why look at affine pieces of projective varieties? Is it to get more info on the affine side, or the projective side? Both? Neither?
+\item Projective normality is mysterious. Should we just wait for chapter 3, like this section suggests?
+\item In that vein, just a grand overview of the difference between projective and affine toric varieties. I think this fits in with the "not quite comfortable with projective things" comment above.
+\item Are pages 59 and 60 saying that a projective toric variety comes from a collection of semigroups instead of a single one?
+\item Is there an analogue to Prop 1.3.2 (about the uniqueness of a torus fixed point)?
+\end{enumerate}
+
+\noindent{\bf Lecture}
+
+\begin{enumerate}
+	\item The torus of projective space is naturally a quotient torus of the torus of affine space. Correspondingly the character lattice is a sublattice in the character lattice of affine space, dictated by the condition that the sum of the coordinates is equal to $0$. This amounts to saying that the RATIONAL monomial functions that are invariant under the linear diagonal scaling are those of homoegenous degree $0$.
+	\item Since we have a natural projection function from affine $(n+1)$ dimensional space to projective space, any affine toric variety in $\bA^{n+1}$ can define a projective variety just by projection. As far as I can tell though it is not common to take a general affine variety and just projectivize it (in the sense that it is for example not easy to determine the ideal of one in term of the other), unless it is contained already in some hyperplane...instead it is nice to study affine varieties that are cones through the origin already, because in a sense they already define varieties in projective space in a nonambiguous way.
+	\item Given a finite set $\mathcal{A}$ which defines an affine toric variety, how to recognize it is a cone? Various points of view lead to the same conclusion: $\mathcal{A}$ must be contained in an affine but not linear subspace of $M_\bR$:
+\begin{itemize}
+	\item algebraically:  think of the elements of $\mathcal{A}$ as the hyperplane sections of your projective toric variety, which therefore should count as ``monomials of degree one". Then you want  the relations defining the ideal to be homogeneous. Perform a change of lattice basis so that the affine space containing $\mathcal{A}$ is parallel to a coordinate hyperplane and notice how now a necessary condition to have a relation is that the sum of the coefficients is zero, which is precisely what we want.
+           \item geometrically: we want a one parameter subtorus to scale the image of $\phi_\mathcal{A}$ linearly. If there is an affine hyperplane containing $\mathcal{A}$, it is defined by an element $u$ of the dual lattice. Then THAT one parameter subgroup of the torus scales the image linearly. This is extremely evident if you again perform a change of lattice basis so as to translate the hyperplane to a coordinate hyperplane.
+\end{itemize}
+ \item Go through the sequence of tori, and associated character lattices. Tell them it will become clear in an example!
+\item Affine charts for the toric variety are obtained via intersection with the affine charts of the ambient projective space. If you take the affine hyperplane containing $\mathcal{A}$ to be parallel to a coordinate hyperplane, then you get a cone whose section with the translate of the coordinate hyperplane is a polytope. From the polytope you can easily read the cones of the affine charts of the projective variety, and also that you really only need the cones corresponding to the vertices of the polytope to cover all of the projective variety.
+\item Work out slowly and carefullty the example of $$(1,0,1), (2,2,1), (0,1,1), (1,1,1).$$
+\item Projective normality: for now note only that it is an invariant of the projective embedding of a projective variety: i.e. a normal projective variety can be embedded in a non projectively normal way. The standard example is the degree $4$ rational normal curve projected down to $\bP^3$.
+
+
+
+\end{enumerate}
+
+
+\section{Sep 29: read 2.3,2.4}
+
+{\bf Section 2.2}
+
+{\bf Highlights:}
+Polytopes, polytopes, and more polytopes.
+All the types of polytopes.
+Polytoooooopes.
+
+Various incarnations of a polytope having enough lattice points:
+\begin{itemize}
+\item A normal polynomial $P$ is such that all lattice points of all integral sums of $P$'s come from lattice points of $P$.
+\item This is equivalent to the cone of $P$ being normal in the sense that the associated affine variety is: this in particular means that the Hilbert basis for the semigroup is at height one, and the projective variety is projectively normal.
+\item If $P$ is a polytope of dimension $n$, then $n-1$P is certainly normal.
+\item  Normal implies very ample. Very ampleness is a notion of line bundles, and here there is the combinatorial version: for every vertex $m$, the semigroup generated by the lattice points of $P$ minus that vertex is saturated.
+\item Discuss first example of non-normal polytope (in 3d): $0, e_1, e_2, e_1+e_2+3e_3$. Can show that it is not normal and that it is not ample.
+\end{itemize}
+{\bf Questions:}
+\begin{enumerate}
+\item Can we go through an example of a polytope and its dual, including using the $<,>$ pairing notation? Why do we need 0 to be in the interior?
+
+{\bf Do example of family of triangles with vertices $(0,2), (\pm1, \alpha)$. Note what happens when $\alpha$ transitions across $0$. Generalize the idea to answer why the condition on $0$ being contained in the polytope.
+}
+
+\item Can we see an example of constructing C(P) for a lattice polytope P, and finding the Hilbert Basis thereof (or is it just important to know of the existence of such a basis?)?
+{\bf
+Yes, we can, issue is we run out of dimensions to visualise things very quickly. Because any $2d$ polytope is normal, the Hilbert basis for the cone is given by the lattice points of the polytope at height one. Otherwise we can (and should) use the theorem that says that the Hilbert basis must be found between heights 1 and $n-1$. This reduces the problem to a finite problem.
+}
+\item Can we see an example of calculating the dimension of a given projective variety?
+\item If P = Conv(S), it would be nice to say that S is the set of vertices of P, but this is not true. If we make sure we choose S minimally, can we make the correspondence between S and the vertices of P a bijection?
+{\bf Yes.}
+\item Some coverage of Definition 2.2.10 (seems similar to smooth/regular in section 1.2, but on the other lattice).
+{\bf Simplicity for a simplex is a criterion for normality. Note this is saying that the localization of the projective variety at any given vertex is smooth.}
+\item A couple people were reminded of simplicial complexes in topology. Not really a question, but just an intuition a few are having.
+\item Is there an intuitive idea for very ample? Is there a relationship to (very) ample line bundles?
+{Discuss a bit.}
+\item End of page 65 seems to imply that $(P^{dual})^{dual}$ is not always P; is this only the case when we don't have 0 in the first place (and hence don't have a well-defined dual)?
+{\bf It is definitely easy to show that the dual of a lattice polytope needs not be a lattice polytope...this because integer lengths become 1 over such lengths and typically this makes the dual polytope have a }
+\item In example 2.2.6, we have that$ P = P^{dual} = Conv(e_1, e_2, -e_1, -e_2)$, but the pictures of them are very different. Can this be explained a bit?
+\end{enumerate}
+
+\section{Oct 1}
+
+{\bf General}
+
+{\bf Questions:}
+
+Our analysis of affine toric varieties used the inherent torus action. When we're in projective space, this torus action becomes trivial. Does this mean we've lost something? Is it regained by looking at the affine pieces that come together to form the projective variety?
+
+{\bf Section 2.3}
+
+{\bf Questions:}
+
+\begin{enumerate}
+\item A few requests to work through Example 2.3.15 (the one with the Veronese embedding)."If we were given a projective toric variety without an embedding:Would we want to embed, find the lattice polytope and use the normal fan for computations?Or will we later see a better way to work with abstract toric varieties of polytopes?"When the book says that in chapter 3 we'll look at "abstract varieties" does it just mean varieties without an embedding?
+\item Why do we care about "reflexive" polytopes? How does it relate to the varieties produced?
+\item There was some confusion about the discussion included in and immediately following Example 2.3.16, and how the parametersaandb have importance some places but not others.
+\end{enumerate}
+
+{\bf Lecture:}
+\begin{enumerate}
+	\item Discuss polytope being full dimensional versus inside a hyperplane. Do example of $\bP^2$ with triangle either in a three dimensional or in a two dimensional vector space $M$. Point out how in one case there is a one dimensional torus subgroup acting trivially, and in the other case the two dimensional torus acts effectively. The map $\Phi_\mathcal{A}$ associated to a full dimensional polytope is ``weird", but one can easily recover a map that allows you to read the homogeneous equation by putting the polytope at height one in a one dimensional bigger. This amounts to considering a one dimensional larger torus acting but with a one dimensional kernel.
+	\item The map associated to a given polytope is translation invariant. This also justifies, if a polytope lives in some affine subspace of $M$, to just restrict to that subspace (and the corresponding sublattice.
+	\item The map is NOT  scaling invariant. Do example of various Veronese embeddings of $\bP^2$ and $\bP^1 \times \bP^1$. However the normal fans are invariant, which tells us that the varieties are isomorphic. Discuss a bit embedded versus abstract.
+ 	\item  There is a full on inclusion reversing correspondence between normal fan and polytope. Because there is also an inclusion reversing correspondence between cones in $M$, the correspondence between normal fan and the "pieces of the variety" is covariant again.
+	\item Examples: $\bP^1, \bP^2, \bP^1\times\bP^1$, Hirzebruch surfaces.
+\end{enumerate}
+
+\section{Oct 3}
+{\bf Section 2.4
+
+Questions:}
+\begin{enumerate}
+\item A couple requests for example walkthroughs, including 2.4.5 and 2.5.6Clarification in what smoothness means in terms of polytopes, i.e., examples/counterexamples of smooth/not-smooth polytopes.
+\item Is it always true that weighted projective space embeds as a subvariety in projective space (a la 2.4.6), and is the way presented in that example how it is always realized?
+\item Throughout this section we assume our polytopes are full dimensional; what goes wrong if they are not?
+\end{enumerate}
+
+{\bf Lecture:}
+
+\begin{enumerate}
+	\item A projective variety defined by a polytope is automatically normal just how it was an affine variety defined by a cone!
+	\item Projective normality of the embedding IS exactly the condition of normality of the polytope.
+	\item About smoothness of the polytope, the key point is that a cone $\sigma$ is smooth iff the dual cone is smooth. And vertices of the polytope give the local picture for the dual cones of the affine charts (and finally notice that smoothness is a local property).
+           \item Talk a little bit more again about Segre embedding, and motivate why it makes sense that product of toric varieties corresponds to product of polytopes, and similarly to product of fans.
+	\item Examples: Do the mirror of $\bP^2$ example. Do weighted projective planes.
+\end{enumerate}
+
+\section{Oct 6: read3.0,  3.1,3.2}
+Lecture on abstract varieties. Draw at all moments connections with manifold theory.
+
+\begin{enumerate}
+	\item Structure sheaf. Sheaf of functions is a way to control the local structure of your algebraic variety. If variety has a finite cover by open affine subsets, can generate the whole sheaf of functions from the regular functions of the open affine pieces. This gives a variety the structure of a ringed space. Also, you can endow both open and closed subsets the structure of an algebraic variety in a natural way (this is called the reduced induced structure).
+	\item Local properties then are completely understood in terms of affine pieces. Smoothness, normality, are properties that can be checked ``point by point", and therefore there is no particular new feature in the general theory.
+	\item Morphisms of algebraic varieties can be understood locally, as Zariski continuous functions, such that on the appropriate restrictions they induce morphisms of algebras of functions.
+	\item Isomorphisms  can be defined categorically, as morphisms that admit inverses.
+	\item Once you do that, you can reverse the procedure, and start from affine charts and define an abstract algebraic variety by gluing them together. This essentially means two things: (1) identifying points (2) defining a sheaf of functions. Both things are done using isomorphisms between any pair of affine charts, that satisfy triple intersection conditions. NOTE: while conceptually this is natural and easy, in practical terms this is complicated and messy etc, and often we rely on either some global structure, or on some way to organize this information (see combinatorial structure) to actually be able to handle the complexity.
+ 	\item Separatedness is the AG geometric version of Haussdorff. Diagonal is closed. Show how this fails in affine line with double origin.
+	\item With separatedness is relatively easy to construct fiber products. Fiber products are handy because they give you intersection of open sets, fibers of morphisms, products of spaces. They satisfy a natural universal property. And the algebraic counterpart in the affine case is tensor product of rings.
+
+\end{enumerate}
+
+
+
+
+
+
+\section{Oct 8-10}
+Dhruv's giving special lectures on non archimedean geometry. Tropicalization of the moment map.
+\section{Oct 13: read 3.3,3.4}
+
+{\bf Section 3.0
+
+Questions:}
+
+\begin{enumerate}
+\item Couple of requests for examples, including 3.0.15.
+
+{\bf This is $\mathbb{P}^1$. That should be done together with the affine line with a double point.}
+\item If we rely heavily on the analogy with manifolds and atlases, are we sweeping too much under the rug?
+
+{\bf No, the analogy is really quite good. The one difference is that local models are more interesting in algebraic geometry, and also they are ``larger"}
+\item Notation confusion on equation 3.0.4 (page 96).
+$$
+(U_i)_{x_j/x_i}
+$$
+\item General confusion with the idea of being "separated," and how it is something we want.
+
+{\bf Discuss analogy with Hausdorffness}
+
+\item What algebraic properties do we get from separation?
+
+{\bf See next question}
+\item Proposition 3.0.18(b). Why is this statement true, via proof or nice example.
+{\bf $X$ separated. Then:
+\begin{enumerate}
+	\item the equalizer of $f,g: Y\to X$ is Zariski closed in $Y$.
+	\item the intersection of affines in $X$ is affine.
+\end{enumerate}
+}
+\item Why does the fiber product exist on any variety that is not necessarily separated?
+
+{\bf I don't know. }
+\item The support of a fan seems totally different from the support of a function in analysis. Is there any common ground between these terms, or is it just an overuse of vocabulary?
+
+{\bf in certain cases a fan can be thought as the image of a piecewise linear function, in which case the support is indeed the support of the function}
+\item Can something be said about the "equalizer" on page 95 (and notational confusion about the double arrows right above it).
+{\bf equalizer is a scary word for a not so scary concept. Talk a bit about it.}
+\item Direct limit = limit (as typically thought of)?
+{\bf talk a little bit about direct limit}
+\end{enumerate}
+
+{\bf Section 3.1
+
+Questions:}
+\begin{enumerate}
+\item Why should we believe Theorem 3.1.7?
+\item Is the notion of separation trying to capture Hausdorff without worrying about the ambient space?
+\item Requests to see an example of the process of constructing $X_Sigma$ from some fan $\Sigma$, as well as any number of random examples from the section.
+\item Why is compactness in the classical topology important (and hence in relation to Theorem 3.1.19, why do we care about a fan's completeness)?
+\item In Theorem 3.1.19, part (b), what happens if we don't have a simplicial fan? How ugly does it get? Manifolds are nice; are orbifolds nice?
+\end{enumerate}
+
+\section{Oct 15}
+\section{Oct 17}
+\section{Oct 20:  read 4.0,4.1}
+\section{Oct 22}
+
+\section{Oct 24}
+\section{Oct 27}
+\section{Oct 29}
+\section{Oct 31 :read 4.2}
+\section{Nov 3}
+\section{Nov 5}
+\section{Nov 7: read 4.3}
+\section{Nov 10}
+\section{Nov 12}
+\section{Nov 14: read 5.0}
+\section{Nov 17: read 5.1}
+\section{Nov 19 }
+\section{Nov 21: read 5.2}
+\section{Dec 1}
+\section{Dec 3}
+\section{Dec 5: read 5.3}
+\section{Dec 8}
+\section{Dec 10: read 5.4}
+\section{Dec 12}
+\end{document}
