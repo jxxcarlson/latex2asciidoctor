@@ -11,7 +11,7 @@ END_DOC = '\\end{document}'
 
 $VERBOSE = false
 SAFETY = false
-MAX_SAFE_LINES = 530
+MAX_SAFE_LINES = 30
 MONITOR_GET_TOKEN = false
 
 NL = '\\\\'
@@ -340,14 +340,12 @@ class Parser
       count += 1
       get_token
     end
-    display_stack
     header_node = Node.create(:header, 'header')
     header_nodes = pop_stack_to_list(count)
     header_nodes.each do |node|
       header_node << node
     end
     push_stack header_node
-    display_stack
     signal '-- exit header'
   end
 
@@ -389,6 +387,36 @@ class Parser
       count += 1
       get_token
     end
+    environment_list = pop_stack(count)
+    if label
+      node = Node.create(:environment, environment_list, env_type: env_type, label: label)
+    else
+      node = Node.create(:environment, environment_list, env_type: env_type)
+    end
+    push_stack node
+    signal '-- exit environment'
+  end
+
+  def environment1(end_token)
+    signal('environment')
+    env_type = @token.value
+    label = nil
+    push_stack @token.value
+    count = 1
+    while @token.value != end_token do
+      get_token
+      if @token.value != end_token
+        if @token.value =~ /\A\\label/
+          macro
+          label_node = pop_stack
+          label = (label_node.attribute :args)[0]
+        else
+          expr
+        end
+        count += 1
+      end
+    end
+    get_token # end_token
     environment_list = pop_stack(count)
     if label
       node = Node.create(:environment, environment_list, env_type: env_type, label: label)

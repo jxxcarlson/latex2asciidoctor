@@ -20,12 +20,6 @@ module RenderAsciidoctor
   def render_tex_environment
     render_signal('render_tex_environment')
     env_name = self.attribute :env_type
-    label = self.attribute :label
-    if label
-      label_text = "\##{label}"
-    else
-      label_text = ''
-    end
     value = "\\begin{#{env_name}}"
     value << self.value.map{ |node| node.render  }.string_join
     value << "\\end{#{env_name}}"

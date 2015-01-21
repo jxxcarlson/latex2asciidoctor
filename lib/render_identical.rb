@@ -64,12 +64,21 @@ module RenderIdentical
     value
   end
 
+  def render_document
+    head_node = first_child
+    body_node = last_child
+    text = head_node.render_children
+    text << body_node.render_children
+  end
+
   def render_node
     case self.type
+      when :document
+        render_document
       when :text, :comment, :end_document
         self.default_render
       when :body
-        '\begin{document}' << "\n" << "\n"
+        '\begin{document}' << "\n"
       when :macro_defs
         render_macro_defs
       when :macro
@@ -81,16 +90,18 @@ module RenderIdentical
       when :environment
         self.render_environment
       else
-        puts "FUNNY NODE, #{node.name}".magenta
-        display_node node
-        puts "======== end funny =========".magenta
-        "\n" << node.name
+        # puts "FUNNY NODE, #{node.name}".magenta
+        # display_node node
+        # puts "======== end funny =========".magenta
+        "\n" # << node.name  ## XX: CATCHING THE BAD STUFF
     end
   end
 
   def render
     # Bad coding!  We shouldn't have to do this!!
-    if self.class.name == 'Token'
+    if self.class.name == 'String'
+      self
+    elsif self.class.name == 'Token'
       render_token
     else
       render_node
