@@ -51,6 +51,18 @@ module RenderIdentical
     end
   end
 
+  def render_display_math
+    value = ''
+    self.value.each do |element|
+      if element.class.name == 'Node'
+        value << element.render
+      else
+        value << element
+      end
+
+    end
+    value
+  end
 
   def render_node
     case self.type
@@ -65,8 +77,7 @@ module RenderIdentical
       when :inline_math
         "#{self.value}" << "\n"
       when :display_math
-        bracket_log "#{self.value}", 'DISPLAY_MATH'
-        "\\[#{self.value}\\]" << "\n"
+        render_display_math
       when :environment
         self.render_environment
       else
@@ -89,7 +100,7 @@ module RenderIdentical
   def render_identical
     text = ''
     text << first_child.render_children # head
-    text << last_child.render_children  # body
+    text << "\\begin{document}\n" << last_child.render_children  # body
   end
 
   def render_lineage

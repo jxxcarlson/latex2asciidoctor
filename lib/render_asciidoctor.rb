@@ -4,7 +4,12 @@ require_relative 'display'
 module RenderAsciidoctor
 
 
+  def render_signal(text)
+    puts text.red if $VERBOSE
+  end
+
   def default_render
+    render_signal('default_render')
     if self.value.class.name == 'String'
       self.value
     else
@@ -12,8 +17,22 @@ module RenderAsciidoctor
     end
   end
 
+  def render_tex_environment
+    render_signal('render_tex_environment')
+    env_name = self.attribute :env_type
+    label = self.attribute :label
+    if label
+      label_text = "\##{label}"
+    else
+      label_text = ''
+    end
+    value = "\\begin{#{env_name}}"
+    value << self.value.map{ |node| node.render  }.string_join
+    value << "\\end{#{env_name}}"
+  end
 
-  def render_environment
+  def render_asciidoc_environment
+    render_signal('render_asciidoc_environment')
     env_name = self.attribute :env_type
     label = self.attribute :label
     if label
@@ -22,15 +41,36 @@ module RenderAsciidoctor
       label_text = ''
     end
     value = "\n[env.#{env_name}#{label_text}]\n--"
-    env_body_list = self.value[0..-2]
-    # value << env_body_list.map{ |token| token.value }.string_join << "\n--\n"
 
     value << self.value.map{ |node| node.render  }.string_join << "--\n"
   end
 
+  def render_environment
+    render_signal('render_environment')
+    env_name = self.attribute :env_type
+    puts "env_name: ".red + "#{env_name}".cyan
+    if ['array', 'array*', 'matrix', 'matrix*', 'align', 'align*'].include? env_name
+      render_tex_environment
+    else
+      render_asciidoc_environment
+    end
+  end
+
+  def render_display_math
+    value = ""
+    self.value.each do |element|
+      if element.class.name == 'Node'
+        value  << element.render
+      else
+        value << element
+      end
+    end
+    value
+  end
+
 
   def render_macro
-
+    render_signal('render_macro')
    macro = self.attribute :macro
    args = self.attribute :args
    case macro
@@ -53,6 +93,7 @@ module RenderAsciidoctor
   end
 
   def render
+    render_signal('render')
     class_name  =  self.class.name
     case class_name
       when 'Node'
@@ -87,7 +128,8 @@ module RenderAsciidoctor
       when :inline_math
         " #{self.value} "
       when :display_math
-        "\\[#{self.value}\\]" << "\n"
+        render_signal('render_display_math')
+        render_display_math
       when :environment
         render_environment
       when :new_line
@@ -100,10 +142,16 @@ module RenderAsciidoctor
     end
   end
 
+  def postprocess(text)
+    text = text.gsub('{', '{ ')
+    text.gsub('}', ' }')
+  end
+
   def render_asciidoctor
     text = ''
     text << first_child.render_children # head
     text << last_child.render_children  # body
+    postprocess(text)
   end
 
   def render_lineage

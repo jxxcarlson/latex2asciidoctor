@@ -82,6 +82,7 @@ class Parser
     text.gsub('\\]', ' \\] ')
   end
 
+
   ####################################################
   #
   #                   Tokens
@@ -374,7 +375,7 @@ class Parser
     signal('environment')
     env_type = @token.value
     label = nil
-    get_token
+    get_token # BE
     # bracket_log @token, 'env get_token'
     count = 0
     while @token.value != end_token do
@@ -398,78 +399,6 @@ class Parser
     signal '-- exit environment'
   end
 
-=begin
-
-  def environment1(end_token)
-    signal('environment1')
-    label = nil
-    rx = /\\end{(.*)}/
-    env_type = (end_token.match rx)[1]
-    # push_stack @token
-    get_token
-    count = 0
-    while @token.value != end_token do
-      if @token.value =~ /\A\\label/
-        macro
-        label_node = pop_stack
-        label = (label_node.attribute :args)[0]
-      else
-        push_stack @token
-      end
-      count += 1
-      get_token
-    end
-    push_stack @token
-    count += 1
-    environment_list = pop_stack(count)
-    if label
-      node = Node.create(:environment, environment_list, env_type: env_type, label: label)
-    else
-      node = Node.create(:environment, environment_list, env_type: env_type)
-    end
-
-    push_stack node
-  end
-
-  # experimental version
-  def environment2(end_token)
-    signal('environment2')
-    label = nil
-    rx = /\\end{(.*)}/
-    env_type = (end_token.match rx)[1]
-    push_stack @token # BEGIN ENV
-    get_token
-    count = 0
-    while @token.value != end_token do
-      if @token.value =~ /\A\\label/
-        macro
-        label_node = pop_stack
-        label = (label_node.attribute :args)[0]
-      else
-        push_stack @token
-      end
-      count += 1
-      get_token
-    end
-    # COUNT IS NOW THE NUMBER OF TOKENS BETWEEN BE & EE
-    # Phase 1 ended, EE is current token
-    mark = @token
-    push_token @token
-    push_tokens(count)
-    # Phase 2 ended
-    expr
-    # Phase 3 ended
-    count = seek(mark)
-    environment_list = pop_stack(count)
-    if label
-      node = Node.create(:environment, environment_list, env_type: env_type, label: label)
-    else
-      node = Node.create(:environment, environment_list, env_type: env_type)
-    end
-    push_stack node
-  end
-
-=end
 
   # A text sequence is a sequence words with no in-line math, display
   # math. or macros (control sequences).  A text sequence is a piece
@@ -546,23 +475,47 @@ class Parser
 
   # Like the previous, but for \[ ... \]
   #
+
   def display_math
     signal('display_math')
-    get_token
+    push_stack @token.value
+    count = 1
+    while @token.value != '\\]'
+      get_token
+      if @token.type  != '\\]'
+        expr
+        count += 1
+      end
+    end
+    get_token # '\\]'
+    push_stack @token.value
+    count += 1
+    value = pop_stack(count)
+    node = Node.create(:display_math, value)
+    push_stack node
+    # display_stack
+    signal '-- exit display math'
+  end
+
+  def display_math1
+    signal('display_math')
     count = 1
     push_stack @token.value
     get_token
     while @token.value != '\\]'
       count += 1
-      push_stack @token.value
-      get_token
+      expr
     end
-    str = pop_stack(count).join(' ')
-    node = Node.create(:display_math, str)
-    # bracket_log str,  'CREATED AS: display_math'
+    get_token # '\\]'
+    push_stack @token.value
+    count += 1
+    value = pop_stack(count)
+    node = Node.create(:display_math, value)
     push_stack node
+    display_stack
     signal '-- exit display math'
   end
+
 
 
   # Used by 'macro' to get all of the macro, not just \name
@@ -700,7 +653,7 @@ class Parser
       body_node = Node.create(:body, '')
     end
 
-    document_node = Node.create(:documentt, 'document')
+    document_node = Node.create(:document, 'document')
     document_node << head_node
     document_node << body_node
     if $VERBOSE

@@ -94,7 +94,7 @@ describe Parser do
 
 
   it 'can parse and render dificult stuff' do
-    test('itemize.tex', verbose: true)
+    test('align.tex', verbose: true)
   end
 
 

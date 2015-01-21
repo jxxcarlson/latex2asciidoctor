@@ -124,7 +124,7 @@ To be continued ...
   # macro = \command \{ {args} \}
   # environment = BEGIN_ENV {label | expr } END_ENV
   # inline_math = $ math_text $
-  # display_math = \[ math_text \]
+  # display_math = \[ { expr } \]
   # item = '\item` text_sequence
 
   # Terminals:
