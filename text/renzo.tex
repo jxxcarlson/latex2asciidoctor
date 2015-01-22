@@ -247,12 +247,11 @@ graphicx,float,caption,subcaption,todonotes,tikz,hyperref,xypic, ulem,youngtab}%
 \label{openMappingThm}
 \end{theorem}
 
-\end{document}
+
 
 \begin{theorem}[Inverse Function Theorem]
 \label{inverseFunctionThm}
 \end{theorem}
-
 
 
 
@@ -270,16 +269,28 @@ In Chapter \ref{complexAnalysis} we created honest domains for the functions $\l
 
 
 
+
 \section{General Definition of a Manifold}
 
-An illustration to have in mind is how the earth can locally be represented on your flat computer screen in Google Maps, but globally the earth is (SPOILER ALERT!) roughly spherical.
+An illustration to have in mind is how the earth can locally be represented on your flat computer screen in
+Google Maps, but globally the earth is (SPOILER ALERT!) roughly spherical.
 
- Suppose you are Google-mapping your neighboorhood with your house at the center of your screen. We think of the map you are looking at as a function
- $$\varphi:(\text{a subset of the earth}) \to (\text{your flat computer screen}).$$
+
+
+Suppose you are Google-mapping your neighboorhood with your house at the center of your screen.
+We think of the map you are looking at as a function
+$$
+  \varphi:(\text{a subset of the earth}) \to (\text{your flat computer screen}).
+$$
+
+\end{document}
+
 We will call such functions charts.
 
 Now imagine your friend who lives down the street is also viewing a map of your neighborhood, centered at his house. Your friend's screen doesn't look exactly the same as yours, but there is a portion of your neighborhood which is both on yours and your friend's screen.
 You may naturally construct a function
+
+
 $$
 \hspace{-1cm}
 T:\left(
@@ -293,7 +304,11 @@ T:\left(
 \text{friend's screen}
 \end{array}
 \right),
-$$ which identifies the points on the two screens that correspond to the same physical location. This is an example of a transition function.
+$$
+which identifies the points on the two screens that correspond to the same physical location. This is an example of a transition function.
+
+\end{document}
+
 
 A manifold is essentially a (nice) topological space $X$ equipped with a set of charts which identify subsets of $X$ with subsets of Euclidean spaces, and such that all transition functions are as suitably well-behaved.
 
@@ -497,6 +512,8 @@ We can use $n+1$-tuples of numbers to identify points of $\bP^{n}(\bR)$, much li
 $$
 \ell=[X_0: X_1:\ldots :X_n].
 $$
+
+
 
 \begin{exercise}
 Which of the points listed below represent the same point in $\bP^1(\bR)$? How many distinct points of $\bP^1(\bR)$ are listed? $[1:1], [2:-1/2], [0:1], [-1/4:-1/4], [6:-3/2], [-2:-2]$. As a side puzzle:  why is $[0:0]$ not a legitimate homogeneous coordinate for any point in $\bP^1(\bR)$?
@@ -993,6 +1010,8 @@ The map $H$, which realizes the three dimensional sphere as a circle fibration o
 \begin{exercise}
 One can take  $U_1$ and $U_2$ as before and glue them together using $\tilde{g}:U_1-\{0\} \to U_2-\{0\}$ where $\tilde{g}(z)=z$. Show that the resulting topological space, $X=U_1 \sqcup_{\tilde{g}} U_2$, is not Hausdorff (and thus is \textit{not} a Riemann Surface!). It is often called the {\bf complex plane with doubled-origin}.
 \end{exercise}
+
+
 
 \subsection{Complex Tori}
 

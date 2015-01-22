@@ -230,7 +230,7 @@ periods of the Fermat elliptic curve times periods of $E_\tau$. Periods of the s
 type are products of transcendental numbers. Are they transcendental? \nb{They should
 be, since they are also abelian integrals.}
 
-\end{document}
+
 
 \section{Mumford-Tate group}
 
@@ -250,7 +250,6 @@ $MT(T) \cong MT(E_\omega)\times MT(E_\tau) = T\times GL_2$, where $T$ is a 2-tor
 
 \end{enumerate} \end{proposition}
 
-%% CUT ST 348
 
 Recall the decomposition \[ H^3(T) \cong H^3(\PP^2 - E_\tau, R^1f_* \ZZ) \oplus
 H^1(E_\tau, (R^2f_*\ZZ)_{prim}), \] where $E_\tau$ is an elliptic curve with period
@@ -269,8 +268,11 @@ always have equality.
 Now let's look at $B$. Since the local system is trivial, \[ B \cong
 (H^1(E_\tau)(1,1))^2 \] and so \[ MT(T) \subset MT(H^1(E_\tau)(1,1))^2 \] But there are
 symmetries of $T$ permuting the lines, so that again the image is the diagonal group
-and we have \[ MT(T) = MT(H^1(E_\tau)) \] Thus we have \[ MT(T) \subset
-MT(H^1(E_\omega)) \times MT(H^1(E_\tau)). \] We claim that that this in an equality.
+and we have \[ MT(T) = MT(H^1(E_\tau)) \] Thus we have
+\[ MT(T) \subset
+MT(H^1(E_\omega)) \times MT(H^1(E_\tau)).
+\]
+We claim that that this in an equality.
 Hmmmmm....
 
 \section{The Field of Periods}
@@ -287,7 +289,6 @@ $K_{per}(H^m(X))$ generated be the entries of the period matrix.
 \noindent One can, however, give a much more specific result which implies the same
 remark:
 
-\end{document}
 
 \begin{theorem} Let $T$ be a doubly cyclic cubic threefold with branch curve $E_\tau$,
 where $E_\tau$ is an elliptic curve with period $\tau$. Then $K_{per}(T)$ is the
@@ -311,6 +312,7 @@ and get a sharp bound?} \end{remark}
 
 \noindent The inequalities of the corollary also follow from the results on the
 Mumford-Tate group, coupled with Deligne's result XXX.
+
 
 \subsection{Towards a proof of the theorem}
 
@@ -388,6 +390,7 @@ period of this Gaussian surface.
 which is more convenient to write as $P_0 = (1- \theta\omega :1:1:1:1)$, and we'll let
 $V_0 = (1-\theta\omega,1,1,1,1)\in\Lambda$ representing $P_0$. Note that $h(V_0) = -3$.
 
+
  We next find a basis for the sublattice $V_0^\bot \subset\Lambda$. It is easy to see
 that the vectors $(1,1,1,-\omega,0), (1,1,1,0,-\omega), (1,1,0,1,-\omega),
 (1,0,1,1,-\omega)$ are in $V_0^\bot\cap\Lambda$, are linearly independent, and their
@@ -400,6 +403,8 @@ chosen. Since $h(r_i) = 2$, the reflections $R_i$ in these vectors preserve $\La
 thus are elements of $\Gamma$ and in fact generate the group $\Gamma_{P_0}$ of order
 $648$ of automorphisms of the Fermat cubic surface.
 
+
+
  The Fermat cubic surface is cyclic in several ways, meaning that there are several
 geodesic disks of cyclic surfaces meeting at $P_0$. Each one of them is fixed by a
 cyclic transformation $\tau$ with eigenvalues $\omega$ wiht multiplicity $3$ and $1$
@@ -407,6 +412,8 @@ with multiplicity $2$. This is in the conjugacy class denoted $3 A_2$ in
 \cite{Dolgachev, Hosoh}. Some experimentation gives a product of the above reflections
 $R_i$ that lies in this conjugacy class. For example, if we let $r_5 = (0,0,1,-1,0)$
 then $\tau = R_1R_2R_5R_1R_2R_5$ is in the desired conjugacy class. Explicitly
+
+
 
 \begin{equation} \label{eq-tau} \tau = \left(\begin{array}{ccccc} 2 - \omega & \omega -
 1 & -1 & -1 & -1 \\1 -\omega & \omega & -1 & -1 & -1 \\ -\omega & \omega & \omega & 0 &
@@ -417,6 +424,8 @@ $\omega$-eigesnpace of $\tau$. The Gram matrix has determinant $3$ and the latti
 $\Lambda_\omega$ is isometric to the (dual) $D_3(\theta)$ lattice in the notation of
 XXX. \nb{check notation and reference}
 
+
+
 Similarly we find that $\Lambda_1$, the one-eigenlattice of $\tau$, has basis
 $(-\theta\omega,0,1,1,1)$ and $(1,1,0,0,0)$. Note that the sum of these two vectors is
 the vector $V_0$ above which represents the period $P_0$ of the Fermat cubic. The Gram
@@ -424,6 +433,8 @@ matrix of this basis has deteminant $-3$. Thus the sublattice
 $\Lambda_1\oplus\Lambda_\omega\subset\Lambda$ has index $9$. \nb{check the index!} This
 decomposition roughly corresponds to the exact sequence \ref{H3:decomp}. MAKE THIS MORE
 PRECISE!!!
+
+
 
 It is easy to check that the lattice $\Lambda_\omega$ has $54$ vectors of norm $2$,
 which fall into $54/6 = 9$ equivalence classes modulo multiplication by units in
@@ -439,6 +450,8 @@ corresponding cubic curves. This sublattice represents a marking of the points o
 inflection, and the the nine vectors are in one to one correspondence with these
 points. The corresponding reflections represent the minus map on the cubic curve
 centered at the corresponding point of inflection.
+
+
 
 More precisely, if we choose $v_1$ to correspond to the origin of the cubic curve, then
 the vectors $v-v2$ and $v1v4$ give a basis for the $\FF_3$-vector space of points of
@@ -464,6 +477,8 @@ $\Lambda_1$, and the last three the above basis for $\Lambda_\omega$: \begin{equ
 & 0 \\\bar\omega & 0 & 1 & -\omega & 1 \\ \bar\omega & 0 & -\omega & 0 & -1 \\
 \bar\omega & 0 & 0 & 1 & 0\end{array}\right) \end{equation}
 
+
+
  Let us take the transformation $T$ of $\Lambda_1\oplus\Lambda_\omega$ which, in this
 basis, is given by $90^0$ rotation on $\Lambda_1$ and the above transformation
 (\ref{eq-orderfour}) on $\Lambda_\omega$, namely
@@ -483,6 +498,8 @@ only if its matrix has $\EEE$- integral entries. We find that \begin{equation}
 -\omega & 0 & \bar\omega \\ \theta & -\omega & -\omega & -\omega & -\omega \\
 -\bar\omega & 0 & -\omega & \bar\omega & 0\end{array}\right) \end{equation} which is
 indeed an $\EEE$-integral matrix, so $\eta$ is an automorphism of $\Lambda$.
+
+
 
 Define a linear map $\Phi:\CC^2\to \CC^{(4,1)}$ by \begin{equation}
 \label{eq-embedding} \Phi(u_0,u_1) = (u_0 - \theta u_1,u_0,\bar\omega u_1,\bar\omega
@@ -509,10 +526,12 @@ $c\Phi(u_0,u_1)$.
 
 \end{theorem}
 
-%% OK TO HERE
+\end{document}
 
 \begin{corollary} The transcendence properties of the periods of cyclic cubic surfaces
 are the same as those of their branch loci. \end{corollary}
+
+
 
 \begin{remark} One finds that $\eta$ has eigenvalues $i$, $-i$ (both of multiplicity
 $2$) and $1$ (of multiplcity one). The signature of the $i$-eigenspace is $(1,1)$ while
@@ -522,9 +541,11 @@ have a symmetry of order $4$, see also XXX. The disk $D_1$ meets our disk $D$ of
 cubic surfaces in the period $P_1$ of the cyclic cover of the Gaussian curve.
 \end{remark}
 
+
+
+
 \begin{remark} The computation of the constant $c$ requires the computation of
 integrals. \end{remark}
-
 
 
 \vfill\eject

@@ -10,8 +10,8 @@ BEGIN_DOC = '\\begin{document}'
 END_DOC = '\\end{document}'
 
 $VERBOSE = false
-SAFETY = false
-MAX_SAFE_LINES = 30
+SAFETY = true
+MAX_SAFE_LINES = 3000
 MONITOR_GET_TOKEN = false
 
 NL = '\\\\'
@@ -31,11 +31,12 @@ end
 
 class Token
 
-  attr_reader :type, :value
+  attr_reader :type, :value, :option
 
-  def initialize(type, value)
+  def initialize(type, value, option={})
     @type = type
     @value = value
+    @option = option
   end
 
   def to_s
@@ -77,9 +78,13 @@ class Parser
   # Put space around '$', '\[', and '\]' so
   # that they will be recognized as tokens
   def preprocess(text)
+    # $$ ... $$ => \[ ... \]
+    text = text.gsub(/\$\$(.*?)\$\$/m, '\[\1\]')
+    # ensure that $, \\[[, \]] are processed as tokens
     text = text.gsub('$', ' $ ')
     text = text.gsub('\\[', ' \\[ ')
-    text.gsub('\\]', ' \\] ')
+    text = text.gsub('\\]', ' \\] ')
+    text
   end
 
 
@@ -93,7 +98,7 @@ class Parser
   # Let str = 'ho ho ho {'one', 'two'}, ha ha'
   # Then args(str) = ['one', 'two']
   def args(str)
-    args_rx = /{(.*)}/
+    args_rx = /{(.*?)}/
     arg_match = str.match args_rx
     if arg_match
       arg_str = (str.match args_rx)[1]
@@ -102,6 +107,16 @@ class Parser
       args = []
     end
     args
+  end
+
+  def options(str)
+    option_rx = /{(.*?)}{(.*?)}/
+    option_match = str.match option_rx
+    if option_match
+      return option_match[2]
+    else
+      return  nil
+    end
   end
 
   def first_arg(str)
@@ -153,7 +168,15 @@ class Parser
         if arg == 'document'
           @token = Token.new(:begin_document, 'BEGIN_DOC')
         elsif arg
-          @token = Token.new(:begin_environment, arg)
+          env_option = options(word)
+          # bracket_log env_option, 'env_option'
+          # bracket_log arg, 'env_arg (type)'
+
+          if env_option
+            @token = Token.new(:begin_environment, arg, env_option: env_option)
+          else
+            @token = Token.new(:begin_environment, arg)
+          end
         else
           puts "unknown \\begin token"
           exit(1)
@@ -372,60 +395,39 @@ class Parser
   def environment(end_token)
     signal('environment')
     env_type = @token.value
+    env_option = @token.option[:env_option]
     label = nil
     get_token # BE
-    # bracket_log @token, 'env get_token'
+    # display_stack
+    if @token.value =~ /\A\\label/
+      macro
+      label_node = pop_stack
+      # bracket_log label_node.to_s, 'label node'
+      label = (label_node.attribute :args)[0]
+    end
     count = 0
     while @token.value != end_token do
-      if @token.value =~ /\A\\label/
-        macro
-        label_node = pop_stack
-        label = (label_node.attribute :args)[0]
-      else
-        expr
-      end
+     #  bracket_log @token.value, 'ENV LOOP START'
+      expr
       count += 1
       get_token
     end
     environment_list = pop_stack(count)
+    options = {}
     if label
-      node = Node.create(:environment, environment_list, env_type: env_type, label: label)
-    else
-      node = Node.create(:environment, environment_list, env_type: env_type)
+      options =options.merge({label: label})
     end
+    if env_option
+      options =options.merge({env_option: env_option})
+    end
+    options = options.merge({env_type: env_type})
+    # bracket_log options, 'OPTIONS'
+    node = Node.create(:environment, environment_list, options)
     push_stack node
     signal '-- exit environment'
   end
 
-  def environment1(end_token)
-    signal('environment')
-    env_type = @token.value
-    label = nil
-    push_stack @token.value
-    count = 1
-    while @token.value != end_token do
-      get_token
-      if @token.value != end_token
-        if @token.value =~ /\A\\label/
-          macro
-          label_node = pop_stack
-          label = (label_node.attribute :args)[0]
-        else
-          expr
-        end
-        count += 1
-      end
-    end
-    get_token # end_token
-    environment_list = pop_stack(count)
-    if label
-      node = Node.create(:environment, environment_list, env_type: env_type, label: label)
-    else
-      node = Node.create(:environment, environment_list, env_type: env_type)
-    end
-    push_stack node
-    signal '-- exit environment'
-  end
+
 
 
   # A text sequence is a sequence words with no in-line math, display
@@ -511,36 +513,18 @@ class Parser
     while @token.value != '\\]'
       get_token
       if @token.type  != '\\]'
-        expr
+        inner_expr
         count += 1
       end
     end
-    get_token # '\\]'
+    # bracket_log @token.value, 'LAST TOKEN, DISPLAY_MATH'
+    get_token # '\\]
     push_stack @token.value
     count += 1
     value = pop_stack(count)
     node = Node.create(:display_math, value)
     push_stack node
     # display_stack
-    signal '-- exit display math'
-  end
-
-  def display_math1
-    signal('display_math')
-    count = 1
-    push_stack @token.value
-    get_token
-    while @token.value != '\\]'
-      count += 1
-      expr
-    end
-    get_token # '\\]'
-    push_stack @token.value
-    count += 1
-    value = pop_stack(count)
-    node = Node.create(:display_math, value)
-    push_stack node
-    display_stack
     signal '-- exit display math'
   end
 
@@ -624,6 +608,24 @@ class Parser
       text_sequence
     else
       push_stack @token.value ## keep going --- XX: is it correct to do this?
+    end
+    signal '-- exit expression'
+  end
+
+  # expr: a switch for various grammar elements
+  def inner_expr
+    signal('expr')
+    #  puts "token: #{@token.value}".yellow
+    if @token.type == :begin_environment
+      begin_token = @token.value
+      end_token = begin_token.gsub('begin', 'end')
+      environment(end_token)
+    elsif @token.value =~ /\\[a-zA-Z].*/
+      macro
+    elsif @token.value[0] != '\\' and @token.value[0] != '\\['
+      text_sequence
+    else
+      # do nothing
     end
     signal '-- exit expression'
   end

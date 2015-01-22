@@ -1,9 +1,10 @@
+$RENDER_MODE = :asciidoctor
+
 module Test
 
   require 'rspec'
   require_relative '../lib/reader'
   require_relative '../lib/parser'
-
 
   case $RENDER_MODE
     when :asciidoctor
@@ -16,6 +17,8 @@ module Test
       $TEST_MODE = :compressed
   end
 
+  # $TEST_MODE   : [:compressed, :identical, :none]
+  # $RENDER_MODE : [:asciidoctor, :identical]
 
 
   ROOT = File.expand_path File.dirname(__FILE__).gsub('lib', 'text')

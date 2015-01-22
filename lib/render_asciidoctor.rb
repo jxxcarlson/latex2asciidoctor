@@ -20,7 +20,12 @@ module RenderAsciidoctor
   def render_tex_environment
     render_signal('render_tex_environment')
     env_name = self.attribute :env_type
-    value = "\\begin{#{env_name}}"
+    env_option = self.attribute :env_option
+    if env_option
+      value = "\\begin{#{env_name}}{#{env_option}}"
+    else
+      value = "\\begin{#{env_name}}"
+    end
     value << self.value.map{ |node| node.render  }.string_join
     value << "\\end{#{env_name}}"
   end
@@ -34,16 +39,17 @@ module RenderAsciidoctor
     else
       label_text = ''
     end
-    value = "\n[env.#{env_name}#{label_text}]\n--"
-
-    value << self.value.map{ |node| node.render  }.string_join << "--\n"
+    # value = "\nENV_START ".red + "\n[env.#{env_name}#{label_text}]\n--\n"
+    # value << self.value[1..-1].map{ |node| node.render  }.string_join << "\n--\n" << "ENV_END\n".red
+    value = "\n[env.#{env_name}#{label_text}]\n--\n"
+    value << self.value[1..-1].map{ |node| node.render  }.string_join << "\n--\n"
   end
 
   def render_environment
     render_signal('render_environment')
     env_name = self.attribute :env_type
     puts "env_name: ".red + "#{env_name}".cyan
-    if ['array', 'array*', 'matrix', 'matrix*', 'align', 'align*'].include? env_name
+    if ['array', 'array*', 'matrix', 'matrix*', 'align', 'align*', 'tabular'].include? env_name
       render_tex_environment
     else
       render_asciidoc_environment
@@ -51,7 +57,7 @@ module RenderAsciidoctor
   end
 
   def render_display_math
-    value = ""
+    value = "\n"
     self.value.each do |element|
       if element.class.name == 'Node'
         value  << element.render
@@ -59,7 +65,7 @@ module RenderAsciidoctor
         value << element
       end
     end
-    value
+    value << "\n"
   end
 
 
@@ -80,8 +86,11 @@ module RenderAsciidoctor
        "====== #{args[0]}\n"
      when 'item'
        "\n. #{self.value}\n"
+     when 'cite'
+       "[<<#{args[0]}>>]"
      else
-       "\n////\n" << self.default_render << "\n////\n"
+       #"\n////\n" << self.default_render << "\n////\n"
+       self.default_render
    end
 
   end
@@ -145,7 +154,7 @@ module RenderAsciidoctor
     text = ''
     text << first_child.render_children # head
     text << last_child.render_children  # body
-    postprocess(text)
+    # postprocess(text)
   end
 
   def render_lineage

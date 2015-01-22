@@ -25,15 +25,32 @@ module RenderIdentical
 
   def render_environment
     name = self.attribute :env_type
-    # "\\begin{#{name}}" << self.value.map{ |token| token.value }.string_join
+    env_option = self.attribute :env_option
     label = self.attribute :label
     if label
       label_text = "\n\\label{#{label}}"
     else
       label_text = ''
     end
+    if env_option
+      command = "\\begin{#{name}}{#{env_option}}"
+    else
+      command = "\\begin{#{name}}"
+    end
+    command << label_text << self.value.map{ |node| node.render  }.string_join << "\\end{#{name}}"
+  end
 
-    "\\begin{#{name}}" << label_text << self.value.map{ |node| node.render  }.string_join << "\\end{#{name}}"
+  def render_tex_environment
+    render_signal('render_tex_environment')
+    env_name = self.attribute :env_type
+    env_option = self.attribute :env_option
+    if env_option
+      value = "\\begin{#{env_name}}{#{env_option}}"
+    else
+      value = "\\begin{#{env_name}}"
+    end
+    value << self.value.map{ |node| node.render  }.string_join
+    value << "\\end{#{env_name}}"
   end
 
   def render_token

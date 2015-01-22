@@ -16,6 +16,8 @@ of the productions
 ----
   expr = { item | text_sequence | macro | environment | inline_math | display_math }
   environment = BEGIN_ENV {label | expr } END_ENV
+  display_math = \[ { inner_expr } \]
+  inner_expr = { text_sequence | macro | environment }
 ----
 Look at the tests for the files `matrix.tex` (nested environments) and
 `itemize.tex` (`\items` inside `itemize` environment.
@@ -119,12 +121,13 @@ To be continued ...
   # macro_defs = '%%begin_macro_defs' { defs } '%%end_macro_defs'
   # body = { expr }
   # expr = { item | text_sequence | macro | environment | inline_math | display_math }
+  # inner_expr = { text_sequence | macro | environment }
   # text_sequence = ordinary prose: a sequence words with no in-line math, display
   #        math. or macros (control sequences)
   # macro = \command \{ {args} \}
   # environment = BEGIN_ENV {label | expr } END_ENV
   # inline_math = $ math_text $
-  # display_math = \[ { expr } \]
+  # display_math = \[ { inner_expr } \]
   # item = '\item` text_sequence
 
   # Terminals:
